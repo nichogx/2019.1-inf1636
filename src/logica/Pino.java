@@ -1,13 +1,13 @@
 package logica;
 
-public class Pino {
+class Pino {
 	private int casa = 0;
 
-	protected int getCasa() {
+	int getCasa() {
 		return casa;
 	}
 	
-	protected void pinoAnda(int res_dados) {
+	void pinoAnda(int res_dados) {
 		casa = (casa + res_dados)%40;
 	}
 }
