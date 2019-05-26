@@ -129,10 +129,10 @@ public class PBanco extends JPanel implements MouseListener {
 		if (x > (int) (frame.LARG_DEFAULT/2 - dsize * 1.2) && y > frame.ALT_DEFAULT/2 + dsize
 			&& x < (int) (frame.LARG_DEFAULT/2 - dsize * 1.2) + 180 && x < frame.ALT_DEFAULT/2 + dsize + 76) {
 			
-			dados[0].roll();
-			dados[1].roll();
+			int roll1 = dados[0].roll();
+			int roll2 = dados[1].roll();
 			
-			players[Jogador.getVez()].jogAnda(dados[0].getFace()+dados[1].getFace());
+			players[Jogador.getVez()].jogAnda(roll1+roll2);
 			
 			Jogador.vezProx();
 			
