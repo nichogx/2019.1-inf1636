@@ -20,11 +20,11 @@ public class FBanco extends JFrame {
 		setBounds(x,y,LARG_DEFAULT,ALT_DEFAULT);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().add(new PBanco(c, this));
-		setTitle("Banco Imobiliário");
+		setTitle("Banco Imobiliario");
 	}
 	
 	public static void main(String args[]) {
-		
-		(new FBanco(new CtrlRegras(1))).setVisible(true);
+
+		(new FBanco(new CtrlRegras())).setVisible(true);
 	}
 }

@@ -1,5 +1,7 @@
 package logica;
 
+import javax.swing.JOptionPane;
+
 public class CtrlRegras {
 	
 	public final int starterMoney = 1000;
@@ -11,8 +13,24 @@ public class CtrlRegras {
 	
 	private int vez = 0;
 	
-	public CtrlRegras(int numPlayers) {
-		this.numPlayers = numPlayers;
+	public CtrlRegras() {
+		
+		// Escolhendo o numero de jogadores
+		while(true) {
+			String nplay = JOptionPane.showInputDialog("Numero de Jogadores");
+		
+			try { 
+				numPlayers = Integer.parseInt(nplay);
+			} catch (NumberFormatException e) {
+				System.out.println(e.getMessage());
+				System.exit(1);
+			}
+		
+			if(numPlayers > 0 && numPlayers <= 6) {
+				break;
+			}
+			JOptionPane.showMessageDialog(null,"Insira um numero valido de jogadores (1 a 6)");
+		}
 				
 		// Criando jogadores
 		players = new Jogador[this.numPlayers];

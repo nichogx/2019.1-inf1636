@@ -41,27 +41,6 @@ public class PBanco extends JPanel implements MouseListener {
 			}
 		}
 		
-		// Seta n�mero de jogadores
-		int numPlayers = 0;
-		
-		while(true) {
-			String nplay = JOptionPane.showInputDialog("Numero de Jogadores");
-		
-			try { 
-				numPlayers = Integer.parseInt(nplay);
-			} catch (NumberFormatException e) {
-				System.out.println(e.getMessage());
-				System.exit(1);
-			}
-		
-			if(numPlayers > 0 && numPlayers <= 6) {
-				break;
-			}
-			JOptionPane.showMessageDialog(null,"Insira um numero valido de jogadores (1 a 6)");
-		}
-		
-		Jogador.setNumPlayers(numPlayers);
-		
 		// Importando imagens dos pinos
 		int numPlayers = ctrl.getNumPlayers();
 		pinImgs = new Image[numPlayers];
@@ -111,7 +90,7 @@ public class PBanco extends JPanel implements MouseListener {
 					sizeX, sizeY, null
 			);
 		}
-		// parte inferior x= 100 -> 152 ... 155 -> 207 ...; y= 621 -> 691. (mais ou menos isso aqui) (pode ser �til para a clickbox)
+		// parte inferior x= 100 -> 152 ... 155 -> 207 ...; y= 621 -> 691. (mais ou menos isso aqui) (pode ser util para a clickbox)
 		
 		
 	}
