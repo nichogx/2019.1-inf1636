@@ -5,7 +5,7 @@ import java.util.Random;
 public class Dado {
 	private int face = 6;
 	
-	public int roll() {
+	protected int roll() {
 		Random r = new Random();
 		
 		this.face = r.nextInt(6) + 1;
@@ -13,7 +13,7 @@ public class Dado {
 		return this.face; // inteiro entre 1 e 6
 	}
 	
-	public int getFace() {
+	protected int getFace() {
 		return this.face;
 	}
 }

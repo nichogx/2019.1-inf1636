@@ -7,7 +7,7 @@ class Pino {
 		return casa;
 	}
 	
-	void pinoAnda(int res_dados) {
-		casa = (casa + res_dados)%40;
+	void mover(int res_dados) {
+		casa = (casa + res_dados) % 40;
 	}
 }

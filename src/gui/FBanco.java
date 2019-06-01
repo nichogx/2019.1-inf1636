@@ -1,11 +1,11 @@
 package gui;
 
-import regras.*;
 import java.awt.*;
 import javax.swing.*;
 
-import regras.CtrlRegras;
+import logica.CtrlRegras;
 
+@SuppressWarnings("serial")
 public class FBanco extends JFrame {
 	final int LARG_DEFAULT=716;
 	final int ALT_DEFAULT=737;
@@ -25,6 +25,6 @@ public class FBanco extends JFrame {
 	
 	public static void main(String args[]) {
 		
-		(new FBanco(new CtrlRegras())).setVisible(true);
+		(new FBanco(new CtrlRegras(1))).setVisible(true);
 	}
 }

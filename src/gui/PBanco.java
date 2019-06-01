@@ -3,24 +3,17 @@ package gui;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.*;
 import java.io.File;
 import java.io.IOException;
 import java.awt.event.*;
-import regras.*;
 import logica.*;
  
+@SuppressWarnings("serial")
 public class PBanco extends JPanel implements MouseListener {
 	
 	private FBanco frame = null;
 
 	private CtrlRegras ctrl = null;
-	
-	private int starterMoney = 1000;
-	private int gameStatus = 0;
-	
-	private Dado[] dados = new Dado[2];
-	private Jogador[] players;
 	
 	private Image tabImg = null;
 	private Image[] dadosFaces = new Image[6];
@@ -48,7 +41,7 @@ public class PBanco extends JPanel implements MouseListener {
 			}
 		}
 		
-		// Seta número de jogadores
+		// Seta nï¿½mero de jogadores
 		int numPlayers = 0;
 		
 		while(true) {
@@ -70,6 +63,7 @@ public class PBanco extends JPanel implements MouseListener {
 		Jogador.setNumPlayers(numPlayers);
 		
 		// Importando imagens dos pinos
+		int numPlayers = ctrl.getNumPlayers();
 		pinImgs = new Image[numPlayers];
 		for (int i = 0; i < numPlayers; i++) {
 			try {
@@ -80,15 +74,6 @@ public class PBanco extends JPanel implements MouseListener {
 			}
 		}
 		
-		dados[0] = new Dado();
-		dados[1] = new Dado();
-		
-		// Criando jogadores
-		players = new Jogador[numPlayers];
-		for (int i = 0; i < numPlayers; i++) {
-			players[i] = new Jogador(starterMoney);
-		}
-		
 		this.addMouseListener(this);
 	}
 	
@@ -96,11 +81,12 @@ public class PBanco extends JPanel implements MouseListener {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 		
+		// desenha tabuleiro
 		g2d.drawImage(this.tabImg, 0, 0, null);
 					
 		// desenhar dados
-		Image d1 = this.dadosFaces[dados[0].getFace() - 1];
-		Image d2 = this.dadosFaces[dados[1].getFace() - 1];
+		Image d1 = this.dadosFaces[ctrl.getFaceDado(0) - 1];
+		Image d2 = this.dadosFaces[ctrl.getFaceDado(1)- 1];
 		int size = (int) (d1.getWidth(null) * 0.25);
 		g2d.drawImage(
 				d1, (int) (frame.LARG_DEFAULT/2 - size * 1.2), frame.ALT_DEFAULT/2 + size, 
@@ -117,10 +103,15 @@ public class PBanco extends JPanel implements MouseListener {
 		// desenhar jogadores
 		int sizeX = (int) (pinImgs[0].getWidth(null) * 0.5);
 		int sizeY = (int) (pinImgs[0].getHeight(null) * 0.5);
-			
-		for (int i = 0; i < Jogador.getNumPlayers(); i++)
-			g2d.drawImage(pinImgs[i], players[i].getPosX()+(sizeX+5)*(i%3), players[i].getPosY()+(sizeY*(i/3%2+1)), sizeX, sizeY, null);
-		// parte inferior x= 100 -> 152 ... 155 -> 207 ...; y= 621 -> 691. (mais ou menos isso aqui) (pode ser útil para a clickbox)
+		
+		for (int i = 0; i < ctrl.getNumPlayers(); i++) {
+			g2d.drawImage(pinImgs[i],
+					ctrl.getPlayer(i).getPosX() + (sizeX + 5) * (i % 3), 
+					ctrl.getPlayer(i).getPosY() + (sizeY * (i / 3 % 2 + 1)), 
+					sizeX, sizeY, null
+			);
+		}
+		// parte inferior x= 100 -> 152 ... 155 -> 207 ...; y= 621 -> 691. (mais ou menos isso aqui) (pode ser ï¿½til para a clickbox)
 		
 		
 	}
@@ -144,21 +135,17 @@ public class PBanco extends JPanel implements MouseListener {
 		int x = e.getX();
 		int y = e.getY();
 	
+		// se clicar nos dados
 		int dsize = (int) (this.dadosFaces[0].getWidth(null) * 0.25);
 		if (x > (int) (frame.LARG_DEFAULT/2 - dsize * 1.2) && y > frame.ALT_DEFAULT/2 + dsize
 			&& x < (int) (frame.LARG_DEFAULT/2 - dsize * 1.2) + 180 && x < frame.ALT_DEFAULT/2 + dsize + 76) {
 			
-			int roll1 = dados[0].roll();
-			int roll2 = dados[1].roll();
-			
-			players[Jogador.getVez()].jogAnda(roll1+roll2);
-			
-			Jogador.vezProx();
+			ctrl.iniciaVez();
 			
 			this.repaint();
 		}
 		
-		// System.out.printf("x = %d, y = %d\n", x,y); Para encontrar a posição em um determinado ponto
+		// System.out.printf("x = %d, y = %d\n", x,y); Para encontrar a posiï¿½ï¿½o em um determinado ponto
 	}
 
 	public void mouseReleased(MouseEvent e) {
