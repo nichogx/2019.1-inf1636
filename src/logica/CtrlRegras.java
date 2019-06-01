@@ -12,6 +12,7 @@ public class CtrlRegras {
 	private Dado[] dados = new Dado[2];
 	
 	private int vez = 0;
+	private String coresJogadores[] = {"Vermelho", "Azul", "Laranja", "Amarelo", "Roxo", "Cinza"};
 	
 	public CtrlRegras() {
 		
@@ -62,5 +63,9 @@ public class CtrlRegras {
 	
 	public int getFaceDado(int index) {
 		return dados[index].getFace();
+	}
+	
+	public String getVezCor() {
+		return coresJogadores[vez];
 	}
 }
