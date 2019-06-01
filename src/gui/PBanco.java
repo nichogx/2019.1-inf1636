@@ -17,6 +17,7 @@ public class PBanco extends JPanel implements MouseListener {
 	private CtrlRegras ctrl = null;
 	
 	private int starterMoney = 1000;
+	private int gameStatus = 0;
 	
 	private Dado[] dados = new Dado[2];
 	private Jogador[] players;
@@ -48,7 +49,24 @@ public class PBanco extends JPanel implements MouseListener {
 		}
 		
 		// Seta número de jogadores
-		int numPlayers = 1;
+		int numPlayers = 0;
+		
+		while(true) {
+			String nplay = JOptionPane.showInputDialog("Numero de Jogadores");
+		
+			try { 
+				numPlayers = Integer.parseInt(nplay);
+			} catch (NumberFormatException e) {
+				System.out.println(e.getMessage());
+				System.exit(1);
+			}
+		
+			if(numPlayers > 0 && numPlayers <= 6) {
+				break;
+			}
+			JOptionPane.showMessageDialog(null,"Insira um numero valido de jogadores (1 a 6)");
+		}
+		
 		Jogador.setNumPlayers(numPlayers);
 		
 		// Importando imagens dos pinos
@@ -79,7 +97,7 @@ public class PBanco extends JPanel implements MouseListener {
 		Graphics2D g2d = (Graphics2D) g;
 		
 		g2d.drawImage(this.tabImg, 0, 0, null);
-				
+					
 		// desenhar dados
 		Image d1 = this.dadosFaces[dados[0].getFace() - 1];
 		Image d2 = this.dadosFaces[dados[1].getFace() - 1];
@@ -89,20 +107,21 @@ public class PBanco extends JPanel implements MouseListener {
 				size, size, 
 				null
 		);
-		
+			
 		g2d.drawImage(
 				d2, (int) (frame.LARG_DEFAULT/2 + size * 0.2), frame.ALT_DEFAULT/2 + size, 
 				size, size, 
 				null
 		);
-		
+			
 		// desenhar jogadores
 		int sizeX = (int) (pinImgs[0].getWidth(null) * 0.5);
 		int sizeY = (int) (pinImgs[0].getHeight(null) * 0.5);
-		
+			
 		for (int i = 0; i < Jogador.getNumPlayers(); i++)
 			g2d.drawImage(pinImgs[i], players[i].getPosX()+(sizeX+5)*(i%3), players[i].getPosY()+(sizeY*(i/3%2+1)), sizeX, sizeY, null);
 		// parte inferior x= 100 -> 152 ... 155 -> 207 ...; y= 621 -> 691. (mais ou menos isso aqui) (pode ser útil para a clickbox)
+		
 		
 	}
 	
