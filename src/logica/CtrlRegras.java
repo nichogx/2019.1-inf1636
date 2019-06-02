@@ -81,6 +81,7 @@ public class CtrlRegras {
 				// TODO fim de jogo, todos faliram
 				// não deve acontecer, pois se todos falirem menos um este ganhou
 			}
+			vez = (vez + 1) % numPlayers; // passa pro outro
 		}
 	}
 
