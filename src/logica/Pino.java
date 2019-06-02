@@ -7,6 +7,10 @@ class Pino {
 		return casa;
 	}
 	
+	void irPara(int novaCasa) {
+		casa = novaCasa;
+	}
+	
 	void mover(int res_dados) {
 		casa = (casa + res_dados) % 40;
 	}

@@ -4,6 +4,11 @@ public class Jogador {
 
 	private Pino pin = new Pino();
 	private int money = 0;
+	
+	// saidas free da prisão
+	private boolean cartaSair = false;
+	
+	private boolean preso = false;
 
 	protected Jogador(int m) {
 		money = m;
@@ -39,5 +44,28 @@ public class Jogador {
 	
 	public int getMoney() {
 		return money;
+	}
+	
+	protected int modifyMoney(int val) {
+		money += val;
+		return money;
+	}
+	
+	protected void darCartaSair() {
+		cartaSair = true;
+	}
+	
+	protected boolean usarCartaSair() {
+		if (!cartaSair || !preso) return false;
+		
+		cartaSair = false;
+		preso = false;
+		
+		return true;
+	}
+	
+	protected void irPrisao() {
+		pin.irPara(10);
+		preso = true;
 	}
 }

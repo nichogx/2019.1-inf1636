@@ -21,7 +21,7 @@ public class CtrlRegras {
 	public int[] sortes = { // especiais: 9 [8], 11 [10], 23 [22]
 			25, 150, 80, 200, 50,
 			50, 100, 100, 0, 200,
-			50 * (numPlayers - 1), 45, 100, 100, 20,
+			0, 45, 100, 100, 20,
 			-15, -25, -45, -30, -100,
 			-100, -40, 0, -30, -50,
 			-25, -30, -45, -50, -50
@@ -67,13 +67,21 @@ public class CtrlRegras {
 		return numPlayers;
 	}
 
-	public void iniciaVez() {
+	public void iniciaVez() {		
 		int roll1 = dados[0].roll();
 		int roll2 = dados[1].roll();
 
 		players[vez].movePino(roll1 + roll2);
 
+		int vezInicial = vez;
+		// passa a vez pro próximo
 		vez = (vez + 1) % numPlayers;
+		while (players[vez].getMoney() <= 0) { // está falido, passa pro próximo
+			if (vezInicial == vez) { // fez loop e o atual está falido
+				// TODO fim de jogo, todos faliram
+				// não deve acontecer, pois se todos falirem menos um este ganhou
+			}
+		}
 	}
 
 	public Jogador getPlayer(int index) {
@@ -90,5 +98,45 @@ public class CtrlRegras {
 	
 	public String getCor(int index) {
 		return coresJogadores[index];
+	}
+	
+	/**
+	 * @return boolean true se jogador ainda tiver dinheiro, false se ele falir
+	 */
+	public boolean execNextCarta() {
+		int atual = cartasSortes.remove(0);
+		
+		// verifica especiais
+		if (atual == 8) { // sair da prisão
+			players[vez].darCartaSair();
+			
+			// carta fica com o jogador, não vai pro fim da lista
+		} else if (atual == 10) { // receber 50 de cada um
+			for (int i = 0; i < numPlayers; i++) {
+				if (players[i].getMoney() > 0) {
+					players[i].modifyMoney(-50);
+					players[vez].modifyMoney(50);
+				}
+			}
+			
+			// coloca a carta no fim da lista
+			cartasSortes.add(atual);
+		} else if (atual == 22) { // ir para prisão 
+			players[vez].irPrisao();
+			
+			// coloca a carta no fim da lista
+			cartasSortes.add(atual);
+		} else {
+			// modifica dinheiro do jogador
+			players[vez].modifyMoney(sortes[atual]);
+			
+			// coloca a carta no fim da lista
+			cartasSortes.add(atual);
+		}
+		
+		
+		if (players[vez].getMoney() > 0) {
+			return true;
+		} return false;
 	}
 }
