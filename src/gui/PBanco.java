@@ -20,7 +20,7 @@ public class PBanco extends JPanel implements MouseListener {
 	private Image[] pinImgs;
 	private Image[] imgSortes = new Image[30];
 	
-	private boolean displayingCarta = false;
+	private String coresJogadores[] = {"Vermelho", "Azul", "Laranja", "Amarelo", "Roxo", "Cinza"};
 
 	public PBanco(CtrlRegras c, FBanco frame) {
 		ctrl = c;
@@ -102,7 +102,7 @@ public class PBanco extends JPanel implements MouseListener {
 		g2d.setFont(new Font("Arial", Font.PLAIN, 18));
 		g2d.drawString("É a vez de: Jogador", 110, 130);
 		g2d.setFont(new Font("Arial", Font.BOLD, 20));
-		g2d.drawString(ctrl.getCor().toUpperCase(), 275, 130);
+		g2d.drawString(coresJogadores[ctrl.getAtual()].toUpperCase(), 275, 130);
 
 		// desenhar jogadores e escrever dinheiro
 		int sizeX = (int) (pinImgs[0].getWidth(null) * 0.5);
@@ -110,7 +110,7 @@ public class PBanco extends JPanel implements MouseListener {
 
 		g2d.setFont(new Font("Consolas", Font.PLAIN, 18));
 		for (int i = 0; i < ctrl.getNumPlayers(); i++) {
-			g2d.drawString(String.format("%-9s $%5d.00", ctrl.getCor(i) + ":", ctrl.getPlayer(i).getMoney()), 110, 150 + 20 * i);
+			g2d.drawString(String.format("%-9s $%5d.00", coresJogadores[i] + ":", ctrl.getPlayer(i).getMoney()), 110, 150 + 20 * i);
 			g2d.drawImage(pinImgs[i],
 					ctrl.getPlayer(i).getPosX() + (sizeX + 5) * (i % 3),
 					ctrl.getPlayer(i).getPosY() + (sizeY * (i / 3 % 2 + 1)),

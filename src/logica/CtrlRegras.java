@@ -1,6 +1,7 @@
 package logica;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import javax.swing.JOptionPane;
@@ -8,6 +9,7 @@ import javax.swing.JOptionPane;
 public class CtrlRegras {
 
 	public final int starterMoney = 1000;
+	public int bankMoney = 50_000;
 
 	private int numPlayers = 1;
 	private Jogador[] players = null;
@@ -15,7 +17,6 @@ public class CtrlRegras {
 	private Dado[] dados = new Dado[2];
 
 	private int vez = 0;
-	private String coresJogadores[] = {"Vermelho", "Azul", "Laranja", "Amarelo", "Roxo", "Cinza"};
 	
 	public ArrayList<Integer> cartasSortes = new ArrayList<Integer>();
 	public int[] sortes = { // especiais: 9 [8], 11 [10], 23 [22]
@@ -66,12 +67,40 @@ public class CtrlRegras {
 	public int getNumPlayers() {
 		return numPlayers;
 	}
+	
+	public int getAtual() {
+		return vez;
+	}
 
-	public void iniciaVez() {		
+	public void iniciaVez() {
 		int roll1 = dados[0].roll();
 		int roll2 = dados[1].roll();
-
-		players[vez].movePino(roll1 + roll2);
+		
+		if (players[vez].isPreso()) {
+			if (roll1 == roll2) {
+				players[vez].release();
+			}
+		} else {
+			Jogador player = players[vez];
+			player.movePino(roll1 + roll2);
+			
+			int casa = player.getCasa();
+			
+			Integer[] casasSorte = {2, 12, 16, 22, 27, 37};
+			int casaGanha = 18;
+			int casaPerde = 24;
+			int casaPrisao = 30;
+			if (casa == casaGanha) {
+				player.modifyMoney(200);
+			} else if (casa == casaPerde) {
+				player.modifyMoney(-200);
+			} else if (casa == casaPrisao) {
+				player.irPrisao();
+			} else if (Arrays.asList(casasSorte).contains(casa)) {
+				// TODO display carta (condição de retorno para o panel?)
+				execNextCarta();
+			}
+		}
 
 		int vezInicial = vez;
 		// passa a vez pro próximo
@@ -92,19 +121,11 @@ public class CtrlRegras {
 	public int getFaceDado(int index) {
 		return dados[index].getFace();
 	}
-
-	public String getCor() {
-		return coresJogadores[vez];
-	}
-	
-	public String getCor(int index) {
-		return coresJogadores[index];
-	}
 	
 	/**
 	 * @return boolean true se jogador ainda tiver dinheiro, false se ele falir
 	 */
-	public boolean execNextCarta() {
+	private boolean execNextCarta() {
 		int atual = cartasSortes.remove(0);
 		
 		// verifica especiais
@@ -139,5 +160,30 @@ public class CtrlRegras {
 		if (players[vez].getMoney() > 0) {
 			return true;
 		} return false;
+	}
+	
+	/**
+	 * 
+	 * @return array de posições do jogador (primeiro é ganhador)
+	 */
+	public int[] endgame() {
+		// não dá pra usar sort em int[] com função, só em Integer[]
+		Integer[] sorted = new Integer[numPlayers];
+		for (int i = 0; i < numPlayers; i++) {
+			sorted[i] = i;
+		}
+
+		Arrays.sort(sorted, (a, b) -> {
+			// TODO aqui só compara o dinheiro. Comparar propriedades também
+			// ("vender" tudo para contar??)
+			return players[b].getMoney() - players[a].getMoney();
+		});
+		
+		// converter para tipo primitivo int[]
+		int[] ret = new int[numPlayers];
+		for (int i = 0; i < numPlayers; i++) {
+			ret[i] = sorted[i];
+		}
+		return ret;
 	}
 }

@@ -42,6 +42,10 @@ public class Jogador {
 		return 99+55*(p%31); // x= 629 e y= 99..154..209..264..319..374..429..484..539 (+55)		para 31-39
 	}
 	
+	protected int getCasa() {
+		return pin.getCasa();
+	}
+	
 	public int getMoney() {
 		return money;
 	}
@@ -67,5 +71,13 @@ public class Jogador {
 	protected void irPrisao() {
 		pin.irPara(10);
 		preso = true;
+	}
+	
+	protected boolean isPreso() {
+		return preso;
+	}
+	
+	protected void release() {
+		preso = false;
 	}
 }
