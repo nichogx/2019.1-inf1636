@@ -1,5 +1,9 @@
 package logica;
 
+import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
+
 public class Jogador {
 
 	private Pino pin = new Pino();
@@ -59,18 +63,22 @@ public class Jogador {
 		cartaSair = true;
 	}
 	
-	protected boolean usarCartaSair() {
-		if (!cartaSair || !preso) return false;
-		
-		cartaSair = false;
-		preso = false;
-		
-		return true;
-	}
-	
-	protected void irPrisao() {
+	/**
+	 * 
+	 * @return boolean true se ele foi pra prisão, false se usou a carta
+	 */
+	protected boolean irPrisao() {
 		pin.irPara(10);
-		preso = true;
+		if (cartaSair) {
+			JOptionPane.showMessageDialog(null,"Você usou sua carta de sair da prisão!");
+			cartaSair = false;
+			
+			return false;
+		} else {			
+			preso = true;
+			
+			return true;
+		}
 	}
 	
 	protected boolean isPreso() {

@@ -17,6 +17,8 @@ public class CtrlRegras {
 	private Dado[] dados = new Dado[2];
 
 	private int vez = 0;
+	private boolean podeRolarDado = true;
+	private int vezesDadosIguais = 0;
 	
 	public ArrayList<Integer> cartasSortes = new ArrayList<Integer>();
 	public int[] sortes = { // especiais: 9 [8], 11 [10], 23 [22]
@@ -71,37 +73,8 @@ public class CtrlRegras {
 	public int getAtual() {
 		return vez;
 	}
-
-	public void iniciaVez() {
-		int roll1 = dados[0].roll();
-		int roll2 = dados[1].roll();
-		
-		if (players[vez].isPreso()) {
-			if (roll1 == roll2) {
-				players[vez].release();
-			}
-		} else {
-			Jogador player = players[vez];
-			player.movePino(roll1 + roll2);
-			
-			int casa = player.getCasa();
-			
-			Integer[] casasSorte = {2, 12, 16, 22, 27, 37};
-			int casaGanha = 18;
-			int casaPerde = 24;
-			int casaPrisao = 30;
-			if (casa == casaGanha) {
-				player.modifyMoney(200);
-			} else if (casa == casaPerde) {
-				player.modifyMoney(-200);
-			} else if (casa == casaPrisao) {
-				player.irPrisao();
-			} else if (Arrays.asList(casasSorte).contains(casa)) {
-				// TODO display carta (condição de retorno para o panel?)
-				execNextCarta();
-			}
-		}
-
+	
+	public void passaVez() {
 		int vezInicial = vez;
 		// passa a vez pro próximo
 		vez = (vez + 1) % numPlayers;
@@ -112,6 +85,77 @@ public class CtrlRegras {
 			}
 			vez = (vez + 1) % numPlayers; // passa pro outro
 		}
+		
+		podeRolarDado = true;
+		vezesDadosIguais = 0;
+	}
+	
+	public int rolarDados() {
+		if (!podeRolarDado) {
+			JOptionPane.showMessageDialog(null,"Você não pode mais rolar o dado.");
+			return 0;
+		}
+		
+		int roll1 = dados[0].roll();
+		int roll2 = dados[1].roll();
+		
+		if (players[vez].isPreso()) {
+			if (roll1 == roll2) {
+				JOptionPane.showMessageDialog(null,"Você saiu da prisão!");
+				players[vez].release();
+			} else {
+				JOptionPane.showMessageDialog(null,"Você não conseguiu sair da prisão!");
+			}
+			
+			return 0;
+		}
+		
+		if (roll1 == roll2) {
+			vezesDadosIguais++;
+			if (vezesDadosIguais >= 3) {
+				JOptionPane.showMessageDialog(null,"Dados iguais três vezes seguidas! Você foi preso! :(");
+				if (!players[vez].irPrisao()) {
+					cartasSortes.add(8); // devolver carta de sair da prisão
+				}
+				
+				podeRolarDado = false;
+				
+				return 0;
+			}
+		} else {
+			podeRolarDado = false;
+		}
+		
+		return roll1 + roll2;
+	}
+
+	public int executaVez(int dados) {		
+		Jogador player = players[vez];
+		player.movePino(dados);
+		
+		int casa = player.getCasa();
+		
+		Integer[] casasSorte = {2, 12, 16, 22, 27, 37};
+		int casaGanha = 18;
+		int casaPerde = 24;
+		int casaPrisao = 30;
+		if (casa == casaGanha) {
+			JOptionPane.showMessageDialog(null,"Prêmio! Você ganhou $200 :D");
+			player.modifyMoney(200);
+		} else if (casa == casaPerde) {
+			JOptionPane.showMessageDialog(null,"Impostos. Você perdeu $200 :(");
+			player.modifyMoney(-200);
+		} else if (casa == casaPrisao) {
+			JOptionPane.showMessageDialog(null,"Azar! Você foi preso! :(");
+			if (!player.irPrisao()) {
+				cartasSortes.add(8); // devolver carta de sair da prisão
+			}
+		} else if (Arrays.asList(casasSorte).contains(casa)) {
+			JOptionPane.showMessageDialog(null,"Você ganhou uma carta!");
+			return execNextCarta();
+		}
+		
+		return -1;
 	}
 
 	public Jogador getPlayer(int index) {
@@ -123,9 +167,9 @@ public class CtrlRegras {
 	}
 	
 	/**
-	 * @return boolean true se jogador ainda tiver dinheiro, false se ele falir
+	 * @return int a carta que foi rodada
 	 */
-	private boolean execNextCarta() {
+	private int execNextCarta() {
 		int atual = cartasSortes.remove(0);
 		
 		// verifica especiais
@@ -133,6 +177,7 @@ public class CtrlRegras {
 			players[vez].darCartaSair();
 			
 			// carta fica com o jogador, não vai pro fim da lista
+			return atual;
 		} else if (atual == 10) { // receber 50 de cada um
 			for (int i = 0; i < numPlayers; i++) {
 				if (players[i].getMoney() > 0) {
@@ -140,26 +185,19 @@ public class CtrlRegras {
 					players[vez].modifyMoney(50);
 				}
 			}
-			
-			// coloca a carta no fim da lista
-			cartasSortes.add(atual);
 		} else if (atual == 22) { // ir para prisão 
-			players[vez].irPrisao();
-			
-			// coloca a carta no fim da lista
-			cartasSortes.add(atual);
+			if (!players[vez].irPrisao()) {
+				cartasSortes.add(8); // devolver carta de sair da prisão
+			}
 		} else {
 			// modifica dinheiro do jogador
 			players[vez].modifyMoney(sortes[atual]);
-			
-			// coloca a carta no fim da lista
-			cartasSortes.add(atual);
 		}
 		
+		// coloca a carta no fim da lista
+		cartasSortes.add(atual);
 		
-		if (players[vez].getMoney() > 0) {
-			return true;
-		} return false;
+		return atual;
 	}
 	
 	/**

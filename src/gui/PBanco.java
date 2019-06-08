@@ -21,6 +21,8 @@ public class PBanco extends JPanel implements MouseListener {
 	private Image[] imgSortes = new Image[30];
 	
 	private String coresJogadores[] = {"Vermelho", "Azul", "Laranja", "Amarelo", "Roxo", "Cinza"};
+	
+	private int displayCarta = -1; // a carta a mostrar
 
 	public PBanco(CtrlRegras c, FBanco frame) {
 		ctrl = c;
@@ -67,6 +69,20 @@ public class PBanco extends JPanel implements MouseListener {
 		}
 
 		this.addMouseListener(this);
+		this.setLayout(null);
+		
+		// Desenhar botão de passar a vez
+		JButton b = new JButton("Passar Vez");
+		PBanco p = this;
+		b.setBounds(frame.LARG_DEFAULT/2 - 150/2, 540, 150, 30);
+		b.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ctrl.passaVez();
+				displayCarta = -1;
+				p.repaint();
+			}
+		});
+		this.add(b);
 	}
 
 	public void paintComponent(Graphics g) {
@@ -97,6 +113,11 @@ public class PBanco extends JPanel implements MouseListener {
 				size, size,
 				null
 		);
+		
+		// Desenhar carta
+		if (displayCarta != -1) { // tem uma carta para display
+			g2d.drawImage(imgSortes[displayCarta], 380, 150, null);
+		}
 		
 		// Escrever vez de quem
 		g2d.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -143,8 +164,12 @@ public class PBanco extends JPanel implements MouseListener {
 		int dsize = (int) (this.dadosFaces[0].getWidth(null) * 0.25);
 		if (x > (int) (frame.LARG_DEFAULT/2 - dsize * 1.2) && y > frame.ALT_DEFAULT/2 + dsize
 			&& x < (int) (frame.LARG_DEFAULT/2 - dsize * 1.2) + 180 && x < frame.ALT_DEFAULT/2 + dsize + 76) {
-
-			ctrl.iniciaVez();
+			// rodar vez e mostrar a nova carta
+			int valDados = ctrl.rolarDados();
+			this.repaint();
+			if (valDados != 0) {
+				displayCarta = ctrl.executaVez(valDados);
+			}
 
 			this.repaint();
 		}
