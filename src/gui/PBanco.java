@@ -141,20 +141,11 @@ public class PBanco extends JPanel implements MouseListener {
 		// parte inferior x= 100 -> 152 ... 155 -> 207 ...; y= 621 -> 691. (mais ou menos isso aqui) (pode ser util para a clickbox)
 	}
 
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
+	public void mouseClicked(MouseEvent e) {}
 
-	}
+	public void mouseEntered(MouseEvent e) {}
 
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
+	public void mouseExited(MouseEvent e) {}
 
 	public void mousePressed(MouseEvent e) {
 		int x = e.getX();
@@ -177,9 +168,6 @@ public class PBanco extends JPanel implements MouseListener {
 		// System.out.printf("x = %d, y = %d\n", x,y); Para encontrar a posi��o em um determinado ponto
 	}
 
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
+	public void mouseReleased(MouseEvent e) {}
 
 }
