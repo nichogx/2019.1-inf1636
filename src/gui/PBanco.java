@@ -19,6 +19,7 @@ public class PBanco extends JPanel implements MouseListener {
 	private Image[] dadosFaces = new Image[6];
 	private Image[] pinImgs;
 	private Image[] imgSortes = new Image[30];
+	private Image[] imgPropriedades = new Image[28];
 	
 	private String coresJogadores[] = {"Vermelho", "Azul", "Laranja", "Amarelo", "Roxo", "Cinza"};
 	
@@ -55,6 +56,9 @@ public class PBanco extends JPanel implements MouseListener {
 				System.exit(1);
 			}
 		}
+		
+		// Importando imagens das propriedades TODO
+		
 
 		// Importando imagens dos pinos
 		int numPlayers = ctrl.getNumPlayers();
@@ -114,9 +118,13 @@ public class PBanco extends JPanel implements MouseListener {
 				null
 		);
 		
+		
+		
 		// Desenhar carta
-		if (displayCarta != -1) { // tem uma carta para display
+		if (displayCarta > -1) { // tem uma carta para display
 			g2d.drawImage(imgSortes[displayCarta], 380, 150, null);
+		} else if(displayCarta < -1) {
+			//TODO g2d.drawImage(imgPropriedade[-displayCarta-2], 380, 150, null);
 		}
 		
 		// Escrever vez de quem
@@ -165,7 +173,7 @@ public class PBanco extends JPanel implements MouseListener {
 			this.repaint();
 		}
 
-		// System.out.printf("x = %d, y = %d\n", x,y); Para encontrar a posi��o em um determinado ponto
+		//System.out.printf("x = %d, y = %d\n", x,y); //Para encontrar a posicao em um determinado ponto
 	}
 
 	public void mouseReleased(MouseEvent e) {}

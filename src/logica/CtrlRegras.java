@@ -8,13 +8,15 @@ import javax.swing.JOptionPane;
 
 public class CtrlRegras {
 
-	public final int starterMoney = 1000;
+	public final int starterMoney = 2458;
 	public int bankMoney = 50_000;
 
 	private int numPlayers = 1;
 	private Jogador[] players = null;
 
 	private Dado[] dados = new Dado[2];
+	
+	private Propriedade[] propriedade = FabricaPropriedades.cria();
 
 	private int vez = 0;
 	private boolean podeRolarDado = true;
@@ -105,6 +107,7 @@ public class CtrlRegras {
 				players[vez].release();
 			} else {
 				JOptionPane.showMessageDialog(null,"Você não conseguiu sair da prisão!");
+				podeRolarDado = false; // Ao não sair da prisão não pode girar o dado novamente
 			}
 			
 			return 0;
@@ -136,9 +139,26 @@ public class CtrlRegras {
 		int casa = player.getCasa();
 		
 		Integer[] casasSorte = {2, 12, 16, 22, 27, 37};
+		
+		/*Integer[] casasTerreno = {
+				1, 3, 4, 6, 8, 9,
+				11, 13, 14, 17, 19,
+				21, 23, 26, 28, 29,
+				31, 33, 34, 36, 38, 39
+		};
+		Integer[] casasEmpresa = {5, 7, 15, 25, 32, 35};*/
+		//TODO
+		Integer[] casasPropriedade = {
+				1, 3, 4, 5, 6, 7, 8, 9,
+				11, 13, 14, 15, 17, 19,
+				21, 23, 25, 26, 28, 29,
+				31, 32, 33, 34, 35, 36, 38, 39
+		};
+		
 		int casaGanha = 18;
 		int casaPerde = 24;
 		int casaPrisao = 30;
+		
 		if (casa == casaGanha) {
 			JOptionPane.showMessageDialog(null,"Prêmio! Você ganhou $200 :D");
 			player.modifyMoney(200);
@@ -153,6 +173,10 @@ public class CtrlRegras {
 		} else if (Arrays.asList(casasSorte).contains(casa)) {
 			JOptionPane.showMessageDialog(null,"Você ganhou uma carta!");
 			return execNextCarta();
+		} else {
+			for(int i = 0; i < casasPropriedade.length; i++) //TODO
+				if(casasPropriedade[i] == casa)
+					return execPropriedade(i);
 		}
 		
 		return -1;
@@ -198,6 +222,12 @@ public class CtrlRegras {
 		cartasSortes.add(atual);
 		
 		return atual;
+	}
+	
+	private int execPropriedade(int prop) { //TODO executa as funções de compra e aluguel de propriedade 
+		
+		//if()
+		return -1;
 	}
 	
 	/**
