@@ -89,6 +89,14 @@ public class CtrlRegras {
 		return vez;
 	}
 	
+	public String getCor() {
+		return coresJogadores[vez];
+	}
+	
+	public String getCor(int i) {
+		return coresJogadores[i];
+	}
+	
 	public void passaVez() {
 		int vezInicial = vez;
 		// passa a vez pro próximo
