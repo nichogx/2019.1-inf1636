@@ -31,6 +31,19 @@ public class CtrlRegras {
 			-100, -40, 0, -30, -50,
 			-25, -30, -45, -50, -50
 	};
+	
+	private String[] nomePropriedades = {
+		"Leblon", "Av. Presidente Vargas", "Av. Nossa S. de Copacabana", "Companhia Ferroviaria",
+		"Av. Brig. Faria Lima", "Companhia de Onibus", "Av. Rebouças", "Av. 9 de Julho",
+		"Av. Europa", "Rua Augusta", "Av. Pacaembu", "Companhia de Taxi",
+		"Interlagos", "Morumbi",
+		"Flamengo", "Botafogo", "Companhia de Navegacao",
+		"Av. Brasil", "Av. Paulista", "Jardim Europa",
+		"Copacabana", "Companhia de Aviacao", "Av. Vieira Souto", "Av. Atlantica", "Companhia de Helicoptero", "Ipanema",
+		"Jardim Paulista", "Brooklin"
+	};
+	
+	private String coresJogadores[] = {"Vermelho", "Azul", "Laranja", "Amarelo", "Roxo", "Cinza"};
 
 	public CtrlRegras() {
 
@@ -140,19 +153,17 @@ public class CtrlRegras {
 		
 		Integer[] casasSorte = {2, 12, 16, 22, 27, 37};
 		
-		/*Integer[] casasTerreno = {
-				1, 3, 4, 6, 8, 9,
-				11, 13, 14, 17, 19,
-				21, 23, 26, 28, 29,
-				31, 33, 34, 36, 38, 39
-		};
-		Integer[] casasEmpresa = {5, 7, 15, 25, 32, 35};*/
-		//TODO
+		// Integer[] casasEmpresa = {5, 7, 15, 25, 32, 35}; // O resto são terrenos
+		
 		Integer[] casasPropriedade = {
-				1, 3, 4, 5, 6, 7, 8, 9,
-				11, 13, 14, 15, 17, 19,
-				21, 23, 25, 26, 28, 29,
-				31, 32, 33, 34, 35, 36, 38, 39
+				1, 3, 4, 5,
+				6, 7, 8, 9,
+				11, 13, 14, 15,
+				17, 19,
+				21, 23, 25,
+				26, 28, 29,
+				31, 32, 33, 34, 35, 36,
+				38, 39
 		};
 		
 		int casaGanha = 18;
@@ -174,7 +185,7 @@ public class CtrlRegras {
 			JOptionPane.showMessageDialog(null,"Você ganhou uma carta!");
 			return execNextCarta();
 		} else {
-			for(int i = 0; i < casasPropriedade.length; i++) //TODO
+			for(int i = 0; i < casasPropriedade.length; i++)
 				if(casasPropriedade[i] == casa)
 					return execPropriedade(i);
 		}
@@ -224,10 +235,40 @@ public class CtrlRegras {
 		return atual;
 	}
 	
+	/**
+	 * @return int o oposto do índice menos 2 da propriedade em que o jogador está
+	 */
 	private int execPropriedade(int prop) { //TODO executa as funções de compra e aluguel de propriedade 
 		
-		//if()
-		return -1;
+		if(propriedade[prop].getProprietario() != 0) {
+			if (prop == 4 || prop == 6 || prop == 12 || prop == 17 || prop == 22 || prop == 25) {
+				int aluguel = propriedade[prop].getAluguel(dados[0].getFace()+dados[1].getFace());
+				players[vez].modifyMoney(-aluguel);
+				JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+nomePropriedades[prop]+" do jogador "+coresJogadores[vez]);
+			} else {
+				int aluguel = propriedade[prop].getAluguel();
+				players[vez].modifyMoney(-aluguel);
+				JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+nomePropriedades[prop]+" do jogador "+coresJogadores[vez]);
+			}
+		} else {
+			String[] options = {"Sim", "Nao"};
+			int resp = JOptionPane.showOptionDialog(null, "Deseja comprar a propriedade: "+nomePropriedades[prop]+" por $"+propriedade[prop].getPreco()+"?",
+									"Click a button", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+			if(resp == 0) {
+				if(players[vez].getMoney() < propriedade[prop].getPreco())
+				{
+					JOptionPane.showMessageDialog(null, "Você não tem dinheiro suficiente para comprar a propriedade: "+nomePropriedades[prop]+", pois ela custa $"+propriedade[prop].getPreco());
+				} else {
+					players[vez].modifyMoney(-propriedade[prop].getPreco());
+					propriedade[prop].setProprietario(vez);
+					JOptionPane.showMessageDialog(null, "Você comprou a propriedade: "+nomePropriedades[prop]+" por $"+propriedade[prop].getPreco());
+				}
+			}
+			
+		}
+		
+		
+		return -prop-2;
 	}
 	
 	/**
@@ -244,6 +285,7 @@ public class CtrlRegras {
 		Arrays.sort(sorted, (a, b) -> {
 			// TODO aqui só compara o dinheiro. Comparar propriedades também
 			// ("vender" tudo para contar??)
+			// (acho que sim, parece uma boa e se nao me engano o Ivan falou isso)
 			return players[b].getMoney() - players[a].getMoney();
 		});
 		

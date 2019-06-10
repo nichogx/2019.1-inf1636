@@ -57,8 +57,15 @@ public class PBanco extends JPanel implements MouseListener {
 			}
 		}
 		
-		// Importando imagens das propriedades TODO
-		
+		// Importando imagens das propriedades
+		for (int i = 0; i < 28; i++) {
+			try {
+				imgPropriedades[i] = ImageIO.read(new File("resources/propriedades/propriedade" + (i + 1) + ".png"));
+			} catch (IOException e) {
+				System.out.println(e.getMessage());
+				System.exit(1);
+			}
+		}
 
 		// Importando imagens dos pinos
 		int numPlayers = ctrl.getNumPlayers();
@@ -124,7 +131,7 @@ public class PBanco extends JPanel implements MouseListener {
 		if (displayCarta > -1) { // tem uma carta para display
 			g2d.drawImage(imgSortes[displayCarta], 380, 150, null);
 		} else if(displayCarta < -1) {
-			//TODO g2d.drawImage(imgPropriedade[-displayCarta-2], 380, 150, null);
+			g2d.drawImage(imgPropriedades[-displayCarta-2], 350, 150, null);
 		}
 		
 		// Escrever vez de quem
