@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 public class CtrlRegras {
 
 	public final int starterMoney = 2458;
-	public int bankMoney = 50_000;
+	public int bankMoney = 50000;
 
 	private int numPlayers = 1;
 	private Jogador[] players = null;
