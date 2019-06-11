@@ -1,11 +1,14 @@
 package logica;
 
+import java.util.ArrayList;
+
 import javax.swing.JOptionPane;
 
 public class Jogador {
 
 	private Pino pin = new Pino();
 	private int money = 0;
+	public ArrayList<Integer> propriedades = new ArrayList<Integer>();
 	
 	// saidas free da prisão
 	private boolean cartaSair = false;
@@ -85,5 +88,17 @@ public class Jogador {
 	
 	protected void release() {
 		preso = false;
+	}
+	
+	protected ArrayList<Integer> getPropriedades() {
+		return propriedades;
+	}
+	
+	protected void compraPropriedade(int property) {
+		propriedades.add(property);
+	}
+	
+	protected void vendePropriedade(int property) {
+		propriedades.remove(propriedades.indexOf(property));
 	}
 }
