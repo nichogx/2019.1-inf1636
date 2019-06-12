@@ -248,15 +248,15 @@ public class CtrlRegras {
 	 */
 	private int execPropriedade(int prop) { //TODO executa as funções de compra e aluguel de propriedade 
 		
-		if(propriedade[prop].getProprietario() != 0) {
-			if (prop == 4 || prop == 6 || prop == 12 || prop == 17 || prop == 22 || prop == 25) {
-				int aluguel = propriedade[prop].getAluguel(dados[0].getFace()+dados[1].getFace());
+		if(propriedade[prop].getProprietario() != -1) {
+			if (propriedade[prop] instanceof Empresa) {
+				int aluguel = ((Empresa)propriedade[prop]).getAluguel(dados[0].getFace()+dados[1].getFace());
 				players[vez].modifyMoney(-aluguel);
-				JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+nomePropriedades[prop]+" do jogador "+coresJogadores[vez]);
+				JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+nomePropriedades[prop]+" do jogador "+coresJogadores[propriedade[prop].getProprietario()]);
 			} else {
-				int aluguel = propriedade[prop].getAluguel();
+				int aluguel = ((Terreno)propriedade[prop]).getAluguel();
 				players[vez].modifyMoney(-aluguel);
-				JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+nomePropriedades[prop]+" do jogador "+coresJogadores[vez]);
+				JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+nomePropriedades[prop]+" do jogador "+coresJogadores[propriedade[prop].getProprietario()]);
 			}
 		} else {
 			String[] options = {"Sim", "Nao"};

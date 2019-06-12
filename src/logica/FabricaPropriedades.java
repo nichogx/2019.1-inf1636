@@ -10,8 +10,8 @@ public class FabricaPropriedades {
 				350, 400,
 				120, 100, 150,
 				160, 140, 140,
-				250, 250, 250, 250, 250, 250, // preços arbitrarios por falta dessa informacao
-				250, 250 					  // preços arbitrarios por falta dessa informacao
+				260, 200, 320, 300, 200, 300,
+				280, 260
 		};
 		
 		int[][] aluguel = { // cada linha simboliza uma cor (empresas tem apenas 1 preco)
@@ -28,10 +28,26 @@ public class FabricaPropriedades {
 		Propriedade[] prop = new Propriedade[28];
 		
 		for(int i = 0; i < 28; i++) {
-			if (i == 4 || i == 6 || i == 12 || i == 17 || i == 22 || i == 25)
+			if (i == 3 || i == 5 || i == 11 || i == 16 || i == 21 || i == 24)
 				prop[i] = new Empresa(preco_compra[i], aluguel[i]);
-			else
-				prop[i] = new Terreno(preco_compra[i], aluguel[i]);
+			else {
+				if(i < 3)
+					prop[i] = new Terreno(preco_compra[i], aluguel[i], "Rosa");
+				else if(i < 8)
+					prop[i] = new Terreno(preco_compra[i], aluguel[i], "Azul");
+				else if(i < 11)
+					prop[i] = new Terreno(preco_compra[i], aluguel[i], "Violeta");
+				else if(i < 14)
+					prop[i] = new Terreno(preco_compra[i], aluguel[i], "Laranja");
+				else if(i < 16)
+					prop[i] = new Terreno(preco_compra[i], aluguel[i], "Vermelho");
+				else if(i < 20)
+					prop[i] = new Terreno(preco_compra[i], aluguel[i], "Amarelo");
+				else if(i < 25)
+					prop[i] = new Terreno(preco_compra[i], aluguel[i], "Verde");
+				else
+					prop[i] = new Terreno(preco_compra[i], aluguel[i], "Roxo");
+			}
 		}
 			
 		
