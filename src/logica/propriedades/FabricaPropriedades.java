@@ -1,7 +1,7 @@
-package logica;
+package logica.propriedades;
 
 public class FabricaPropriedades {
-	static Propriedade[] cria() {
+	public static Propriedade[] cria() {
 		
 		int[] preco_compra = { // cada linha simboliza uma cor (empresas entram no meio e fim de cada cor)
 				100, 60, 60, 200,

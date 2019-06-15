@@ -1,6 +1,6 @@
-package logica;
+package logica.propriedades;
 
-class Empresa extends Propriedade {
+public class Empresa extends Propriedade {
 	
 	Empresa(int cost, int[] loan, String name) {
 		super(cost, loan, name);

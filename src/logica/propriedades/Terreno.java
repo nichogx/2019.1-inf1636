@@ -1,6 +1,6 @@
-package logica;
+package logica.propriedades;
 
-class Terreno extends Propriedade {
+public class Terreno extends Propriedade {
 	
 	private int casa = 0;
 	private int hotel = 0;

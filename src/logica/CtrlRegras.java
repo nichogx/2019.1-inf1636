@@ -6,6 +6,8 @@ import java.util.Collections;
 
 import javax.swing.JOptionPane;
 
+import logica.propriedades.*;
+
 public class CtrlRegras {
 
 	public final int starterMoney = 2458;
