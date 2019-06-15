@@ -31,17 +31,6 @@ public class CtrlRegras {
 			-100, -40, 0, -30, -50,
 			-25, -30, -45, -50, -50
 	};
-	
-	private String[] nomePropriedades = {
-		"Leblon", "Av. Presidente Vargas", "Av. Nossa S. de Copacabana", "Companhia Ferroviaria",
-		"Av. Brig. Faria Lima", "Companhia de Onibus", "Av. Rebouças", "Av. 9 de Julho",
-		"Av. Europa", "Rua Augusta", "Av. Pacaembu", "Companhia de Taxi",
-		"Interlagos", "Morumbi",
-		"Flamengo", "Botafogo", "Companhia de Navegacao",
-		"Av. Brasil", "Av. Paulista", "Jardim Europa",
-		"Copacabana", "Companhia de Aviacao", "Av. Vieira Souto", "Av. Atlantica", "Companhia de Helicoptero", "Ipanema",
-		"Jardim Paulista", "Brooklin"
-	};
 
 	public CtrlRegras() {
 
@@ -247,24 +236,24 @@ public class CtrlRegras {
 			if (propriedade[prop] instanceof Empresa) {
 				int aluguel = ((Empresa)propriedade[prop]).getAluguel(dados[0].getFace()+dados[1].getFace());
 				players[vez].modifyMoney(-aluguel);
-				JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+nomePropriedades[prop]+" do jogador "+players[propriedade[prop].getProprietario()].getCor());
+				JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+propriedade[prop].getNome()+" do jogador "+players[propriedade[prop].getProprietario()].getCor());
 			} else {
 				int aluguel = ((Terreno)propriedade[prop]).getAluguel();
 				players[vez].modifyMoney(-aluguel);
-				JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+nomePropriedades[prop]+" do jogador "+players[propriedade[prop].getProprietario()].getCor());
+				JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+propriedade[prop].getNome()+" do jogador "+players[propriedade[prop].getProprietario()].getCor());
 			}
 		} else {
 			String[] options = {"Sim", "Nao"};
-			int resp = JOptionPane.showOptionDialog(null, "Deseja comprar a propriedade: "+nomePropriedades[prop]+" por $"+propriedade[prop].getPreco()+"?",
+			int resp = JOptionPane.showOptionDialog(null, "Deseja comprar a propriedade: "+propriedade[prop].getNome()+" por $"+propriedade[prop].getPreco()+"?",
 									"Click a button", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
 			if(resp == 0) {
 				if(players[vez].getMoney() < propriedade[prop].getPreco())
 				{
-					JOptionPane.showMessageDialog(null, "Você não tem dinheiro suficiente para comprar a propriedade: "+nomePropriedades[prop]+", pois ela custa $"+propriedade[prop].getPreco());
+					JOptionPane.showMessageDialog(null, "Você não tem dinheiro suficiente para comprar a propriedade: "+propriedade[prop].getNome()+", pois ela custa $"+propriedade[prop].getPreco());
 				} else {
 					players[vez].modifyMoney(-propriedade[prop].getPreco());
 					propriedade[prop].setProprietario(vez);
-					JOptionPane.showMessageDialog(null, "Você comprou a propriedade: "+nomePropriedades[prop]+" por $"+propriedade[prop].getPreco());
+					JOptionPane.showMessageDialog(null, "Você comprou a propriedade: "+propriedade[prop].getNome()+" por $"+propriedade[prop].getPreco());
 				}
 			}
 			

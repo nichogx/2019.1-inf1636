@@ -6,8 +6,8 @@ class Terreno extends Propriedade {
 	private int hotel = 0;
 	private String cor = "";
 	
-	Terreno(int cost, int[] loan, String color) {
-		super(cost, loan);
+	Terreno(int cost, int[] loan, String name, String color) {
+		super(cost, loan, name);
 		cor = color;
 	}
 	

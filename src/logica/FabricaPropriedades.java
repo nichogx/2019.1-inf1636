@@ -25,28 +25,39 @@ public class FabricaPropriedades {
 				{24,120,360,850,1025,1200}, {22,110,330,800,975,1150}
 		};
 		
+		String[] nomes = {
+				"Leblon", "Av. Presidente Vargas", "Av. Nossa S. de Copacabana", "Companhia Ferroviaria",
+				"Av. Brig. Faria Lima", "Companhia de Onibus", "Av. Rebouças", "Av. 9 de Julho",
+				"Av. Europa", "Rua Augusta", "Av. Pacaembu", "Companhia de Taxi",
+				"Interlagos", "Morumbi",
+				"Flamengo", "Botafogo", "Companhia de Navegacao",
+				"Av. Brasil", "Av. Paulista", "Jardim Europa",
+				"Copacabana", "Companhia de Aviacao", "Av. Vieira Souto", "Av. Atlantica", "Companhia de Helicoptero", "Ipanema",
+				"Jardim Paulista", "Brooklin"
+			};
+		
 		Propriedade[] prop = new Propriedade[28];
 		
 		for(int i = 0; i < 28; i++) {
 			if (i == 3 || i == 5 || i == 11 || i == 16 || i == 21 || i == 24)
-				prop[i] = new Empresa(preco_compra[i], aluguel[i]);
+				prop[i] = new Empresa(preco_compra[i], aluguel[i], nomes[i]);
 			else {
 				if(i < 3)
-					prop[i] = new Terreno(preco_compra[i], aluguel[i], "Rosa");
+					prop[i] = new Terreno(preco_compra[i], aluguel[i], nomes[i], "Rosa");
 				else if(i < 8)
-					prop[i] = new Terreno(preco_compra[i], aluguel[i], "Azul");
+					prop[i] = new Terreno(preco_compra[i], aluguel[i], nomes[i], "Azul");
 				else if(i < 11)
-					prop[i] = new Terreno(preco_compra[i], aluguel[i], "Violeta");
+					prop[i] = new Terreno(preco_compra[i], aluguel[i], nomes[i], "Violeta");
 				else if(i < 14)
-					prop[i] = new Terreno(preco_compra[i], aluguel[i], "Laranja");
+					prop[i] = new Terreno(preco_compra[i], aluguel[i], nomes[i], "Laranja");
 				else if(i < 16)
-					prop[i] = new Terreno(preco_compra[i], aluguel[i], "Vermelho");
+					prop[i] = new Terreno(preco_compra[i], aluguel[i], nomes[i], "Vermelho");
 				else if(i < 20)
-					prop[i] = new Terreno(preco_compra[i], aluguel[i], "Amarelo");
+					prop[i] = new Terreno(preco_compra[i], aluguel[i], nomes[i], "Amarelo");
 				else if(i < 25)
-					prop[i] = new Terreno(preco_compra[i], aluguel[i], "Verde");
+					prop[i] = new Terreno(preco_compra[i], aluguel[i], nomes[i], "Verde");
 				else
-					prop[i] = new Terreno(preco_compra[i], aluguel[i], "Roxo");
+					prop[i] = new Terreno(preco_compra[i], aluguel[i], nomes[i], "Roxo");
 			}
 		}
 			

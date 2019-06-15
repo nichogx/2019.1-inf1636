@@ -4,10 +4,12 @@ public abstract class Propriedade {
 	private int preco;
 	int[] aluguel;
 	private int proprietario = -1;
+	private String nome;
 	
-	Propriedade(int cost, int[] loan) {
+	Propriedade(int cost, int[] loan, String nome) {
 		preco = cost;
 		aluguel = loan;
+		this.nome = nome;
 	}
 	
 	public int getProprietario() {
@@ -22,4 +24,7 @@ public abstract class Propriedade {
 		proprietario = player;
 	}
 	
+	public String getNome() {
+		return this.nome;
+	}
 }
