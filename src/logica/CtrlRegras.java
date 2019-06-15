@@ -186,11 +186,11 @@ public class CtrlRegras {
 		return -1;
 	}
 	
-	public JogadorInfo getPlayer() {
+	public JogadorInfo getPlayerInfo() {
 		return players[vez];
 	}
 
-	public Jogador getPlayer(int index) {
+	public JogadorInfo getPlayerInfo(int index) {
 		return players[index];
 	}
 
