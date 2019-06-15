@@ -9,14 +9,16 @@ public class Jogador {
 	private Pino pin = new Pino();
 	private int money = 0;
 	public ArrayList<Integer> propriedades = new ArrayList<Integer>();
+	private String cor;
 	
 	// saidas free da prisão
 	private boolean cartaSair = false;
 	
 	private boolean preso = false;
 
-	protected Jogador(int m) {
-		money = m;
+	protected Jogador(int money, String cor) {
+		this.money = money;
+		this.cor = cor;
 	}
 
 	protected void movePino(int res_dados) {
@@ -100,5 +102,9 @@ public class Jogador {
 	
 	protected void vendePropriedade(int property) {
 		propriedades.remove(propriedades.indexOf(property));
+	}
+	
+	public String getCor() {
+		return cor;
 	}
 }

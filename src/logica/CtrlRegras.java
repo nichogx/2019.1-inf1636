@@ -42,8 +42,6 @@ public class CtrlRegras {
 		"Copacabana", "Companhia de Aviacao", "Av. Vieira Souto", "Av. Atlantica", "Companhia de Helicoptero", "Ipanema",
 		"Jardim Paulista", "Brooklin"
 	};
-	
-	private String coresJogadores[] = {"Vermelho", "Azul", "Laranja", "Amarelo", "Roxo", "Cinza"};
 
 	public CtrlRegras() {
 
@@ -66,8 +64,9 @@ public class CtrlRegras {
 
 		// Criando jogadores
 		players = new Jogador[this.numPlayers];
+		String coresJogadores[] = {"Vermelho", "Azul", "Laranja", "Amarelo", "Roxo", "Cinza"};
 		for (int i = 0; i < this.numPlayers; i++) {
-			players[i] = new Jogador(starterMoney);
+			players[i] = new Jogador(starterMoney, coresJogadores[i]);
 		}
 
 		// Criando dados
@@ -87,14 +86,6 @@ public class CtrlRegras {
 	
 	public int getAtual() {
 		return vez;
-	}
-	
-	public String getCor() {
-		return coresJogadores[vez];
-	}
-	
-	public String getCor(int i) {
-		return coresJogadores[i];
 	}
 	
 	public void passaVez() {
@@ -200,6 +191,10 @@ public class CtrlRegras {
 		
 		return -1;
 	}
+	
+	public Jogador getPlayer() {
+		return players[vez];
+	}
 
 	public Jogador getPlayer(int index) {
 		return players[index];
@@ -252,11 +247,11 @@ public class CtrlRegras {
 			if (propriedade[prop] instanceof Empresa) {
 				int aluguel = ((Empresa)propriedade[prop]).getAluguel(dados[0].getFace()+dados[1].getFace());
 				players[vez].modifyMoney(-aluguel);
-				JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+nomePropriedades[prop]+" do jogador "+coresJogadores[propriedade[prop].getProprietario()]);
+				JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+nomePropriedades[prop]+" do jogador "+players[propriedade[prop].getProprietario()].getCor());
 			} else {
 				int aluguel = ((Terreno)propriedade[prop]).getAluguel();
 				players[vez].modifyMoney(-aluguel);
-				JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+nomePropriedades[prop]+" do jogador "+coresJogadores[propriedade[prop].getProprietario()]);
+				JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+nomePropriedades[prop]+" do jogador "+players[propriedade[prop].getProprietario()].getCor());
 			}
 		} else {
 			String[] options = {"Sim", "Nao"};
