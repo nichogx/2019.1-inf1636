@@ -6,7 +6,10 @@ import java.util.Collections;
 
 import javax.swing.JOptionPane;
 
-import logica.propriedades.*;
+import logica.componentes.Dado;
+import logica.componentes.jogador.Jogador;
+import logica.componentes.jogador.JogadorInfo;
+import logica.componentes.propriedades.*;
 
 public class CtrlRegras {
 
@@ -183,7 +186,7 @@ public class CtrlRegras {
 		return -1;
 	}
 	
-	public Jogador getPlayer() {
+	public JogadorInfo getPlayer() {
 		return players[vez];
 	}
 

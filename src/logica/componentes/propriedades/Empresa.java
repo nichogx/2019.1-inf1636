@@ -1,4 +1,4 @@
-package logica.propriedades;
+package logica.componentes.propriedades;
 
 public class Empresa extends Propriedade {
 	

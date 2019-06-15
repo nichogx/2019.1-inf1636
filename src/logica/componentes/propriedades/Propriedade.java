@@ -1,4 +1,4 @@
-package logica.propriedades;
+package logica.componentes.propriedades;
 
 public abstract class Propriedade {
 	private int preco;

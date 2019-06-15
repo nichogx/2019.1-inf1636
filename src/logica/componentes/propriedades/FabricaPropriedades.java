@@ -1,4 +1,4 @@
-package logica.propriedades;
+package logica.componentes.propriedades;
 
 public class FabricaPropriedades {
 	public static Propriedade[] cria() {

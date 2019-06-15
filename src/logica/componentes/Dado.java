@@ -1,11 +1,11 @@
-package logica;
+package logica.componentes;
 
 import java.util.Random;
 
 public class Dado {
 	private int face = 6;
 	
-	protected int roll() {
+	public int roll() {
 		Random r = new Random();
 		
 		this.face = r.nextInt(6) + 1;
@@ -13,7 +13,7 @@ public class Dado {
 		return this.face; // inteiro entre 1 e 6
 	}
 	
-	protected int getFace() {
+	public int getFace() {
 		return this.face;
 	}
 }

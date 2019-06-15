@@ -1,4 +1,4 @@
-package logica;
+package logica.componentes.jogador;
 
 class Pino {
 	private int casa = 0;

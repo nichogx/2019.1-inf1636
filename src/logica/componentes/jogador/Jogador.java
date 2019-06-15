@@ -1,11 +1,11 @@
-package logica;
+package logica.componentes.jogador;
 
 import java.awt.Color;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
-public class Jogador {
+public class Jogador implements JogadorInfo {
 
 	private Pino pin = new Pino();
 	private int money = 0;
@@ -18,7 +18,7 @@ public class Jogador {
 	
 	private boolean preso = false;
 
-	protected Jogador(int money, String cor) {
+	public Jogador(int money, String cor) {
 		this.money = money;
 		this.cor = cor;
 		if (cor.equals("Vermelho")) {
@@ -36,7 +36,7 @@ public class Jogador {
 		}
 	}
 
-	protected void movePino(int res_dados) {
+	public void movePino(int res_dados) {
 		pin.mover(res_dados);
 	}
 
@@ -64,7 +64,7 @@ public class Jogador {
 		return 99+55*(p%31); // x= 629 e y= 99..154..209..264..319..374..429..484..539 (+55)		para 31-39
 	}
 	
-	protected int getCasa() {
+	public int getCasa() {
 		return pin.getCasa();
 	}
 	
@@ -72,12 +72,12 @@ public class Jogador {
 		return money;
 	}
 	
-	protected int modifyMoney(int val) {
+	public int modifyMoney(int val) {
 		money += val;
 		return money;
 	}
 	
-	protected void darCartaSair() {
+	public void darCartaSair() {
 		cartaSair = true;
 	}
 	
@@ -85,7 +85,7 @@ public class Jogador {
 	 * 
 	 * @return boolean true se ele foi pra prisão, false se usou a carta
 	 */
-	protected boolean irPrisao() {
+	public boolean irPrisao() {
 		pin.irPara(10);
 		if (cartaSair) {
 			JOptionPane.showMessageDialog(null,"Você usou sua carta de sair da prisão!");
@@ -99,23 +99,23 @@ public class Jogador {
 		}
 	}
 	
-	protected boolean isPreso() {
+	public boolean isPreso() {
 		return preso;
 	}
 	
-	protected void release() {
+	public void release() {
 		preso = false;
 	}
 	
-	protected ArrayList<Integer> getPropriedades() {
+	public ArrayList<Integer> getPropriedades() {
 		return propriedades;
 	}
 	
-	protected void compraPropriedade(int property) {
+	public void compraPropriedade(int property) {
 		propriedades.add(property);
 	}
 	
-	protected void vendePropriedade(int property) {
+	public void vendePropriedade(int property) {
 		propriedades.remove(propriedades.indexOf(property));
 	}
 	
