@@ -136,7 +136,9 @@ public class PBanco extends JPanel implements MouseListener {
 		g2d.setFont(new Font("Arial", Font.PLAIN, 18));
 		g2d.drawString("É a vez de: Jogador", 110, 130);
 		g2d.setFont(new Font("Arial", Font.BOLD, 20));
-		g2d.drawString(ctrl.getPlayer().getCor(), 275, 130);
+		g2d.setColor(ctrl.getPlayer().getCorObj());
+		g2d.drawString(ctrl.getPlayer().getCor().toUpperCase(), 275, 130);
+		g2d.setColor(new Color(0));
 
 		// desenhar jogadores e escrever dinheiro
 		int sizeX = (int) (pinImgs[0].getWidth(null) * 0.5);

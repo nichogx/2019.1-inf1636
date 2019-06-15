@@ -1,5 +1,6 @@
 package logica;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -10,6 +11,7 @@ public class Jogador {
 	private int money = 0;
 	public ArrayList<Integer> propriedades = new ArrayList<Integer>();
 	private String cor;
+	private Color corobj = new Color(0x000000);
 	
 	// saidas free da prisão
 	private boolean cartaSair = false;
@@ -19,6 +21,19 @@ public class Jogador {
 	protected Jogador(int money, String cor) {
 		this.money = money;
 		this.cor = cor;
+		if (cor.equals("Vermelho")) {
+			corobj = new Color(0xC10000);
+		} else if (cor.equals("Azul")) {
+			corobj = new Color(0x0050C1);
+		} else if (cor.equals("Laranja")) {
+			corobj = new Color(0xFF680A);
+		} else if (cor.equals("Amarelo")) {
+			corobj = new Color(0xEFCE15);
+		} else if (cor.equals("Roxo")) {
+			corobj = new Color(0x8E008C);
+		} else if (cor.equals("Cinza")) {
+			corobj = new Color(0x999999);
+		}
 	}
 
 	protected void movePino(int res_dados) {
@@ -106,5 +121,9 @@ public class Jogador {
 	
 	public String getCor() {
 		return cor;
+	}
+	
+	public Color getCorObj() {
+		return corobj;
 	}
 }
