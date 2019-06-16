@@ -21,6 +21,8 @@ public class PBanco extends JPanel implements MouseListener {
 	private Image[] imgSortes = new Image[30];
 	private Image[] imgPropriedades = new Image[28];
 	
+	private JCheckBox roubar = null;
+	
 	private int displayCarta = -1; // a carta a mostrar
 
 	public PBanco(CtrlRegras c, FBanco frame) {
@@ -79,6 +81,12 @@ public class PBanco extends JPanel implements MouseListener {
 
 		this.addMouseListener(this);
 		this.setLayout(null);
+		
+		// Desenhar checkbox roubar
+		roubar = new JCheckBox("Escolher valor dos dados");
+		roubar.setBounds(105, 570, 180, 30);
+		roubar.setOpaque(false);
+		this.add(roubar);
 		
 		// Desenhar botão de passar a vez
 		JButton b = new JButton("Passar Vez");
@@ -171,7 +179,13 @@ public class PBanco extends JPanel implements MouseListener {
 		if (x > (int) (frame.LARG_DEFAULT/2 - dsize * 1.2) && y > frame.ALT_DEFAULT/2 + dsize
 			&& x < (int) (frame.LARG_DEFAULT/2 - dsize * 1.2) + 180 && y < frame.ALT_DEFAULT/2 + dsize + 76) {
 			// rodar vez e mostrar a nova carta
-			int valDados = ctrl.rolarDados();
+			int valDados = 0;
+			if (roubar.isSelected()) {
+				valDados = ctrl.rolarDadosRoubar();
+			} else {
+				valDados = ctrl.rolarDados();
+			}
+
 			this.repaint();
 			if (valDados != 0) {
 				displayCarta = ctrl.executaVez(valDados);

@@ -54,7 +54,8 @@ public class CtrlRegras {
 			// Escolhendo o numero de jogadores
 			String[] optionsPlayers = {"2 Jogadores", "3 Jogadores", "4 Jogadores", "5 Jogadores", "6 Jogadores"};
 			JComboBox<String> cbbox = new JComboBox<String>(optionsPlayers);
-			int esc = JOptionPane.showOptionDialog(null, cbbox, "Número de Jogadores",
+			Object[] cbboxDisplay = {"Escolha o número de jogadores:", cbbox};
+			int esc = JOptionPane.showOptionDialog(null, cbboxDisplay, "Número de Jogadores",
 					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 			
 			if (esc == JOptionPane.OK_OPTION) {
@@ -120,14 +121,45 @@ public class CtrlRegras {
 		vezesDadosIguais = 0;
 	}
 	
+	public int rolarDadosRoubar() {
+		if (!podeRolarDado) {
+			JOptionPane.showMessageDialog(null,"Você não pode mais rolar o dado.");
+			return 0;
+		}
+		
+		String[] valDados = {"1", "2", "3", "4", "5", "6"};
+		JComboBox<String> d1 = new JComboBox<String>(valDados);
+		JComboBox<String> d2 = new JComboBox<String>(valDados);
+		
+		Object[] diags = {"Escolha valores para os dois dados\nDado 1:", d1, "Dado 2:", d2};
+		int esc = JOptionPane.showOptionDialog(null, diags, "Valor dos Dados",
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+		
+		if (esc != JOptionPane.OK_OPTION) {
+			return rolarDados();
+		}
+		
+		dados[0].forceFace(d1.getSelectedIndex() + 1);
+		dados[1].forceFace(d2.getSelectedIndex() + 1);
+		
+		return executarDados();
+	}
+	
 	public int rolarDados() {
 		if (!podeRolarDado) {
 			JOptionPane.showMessageDialog(null,"Você não pode mais rolar o dado.");
 			return 0;
 		}
 		
-		int roll1 = dados[0].roll();
-		int roll2 = dados[1].roll();
+		dados[0].roll();
+		dados[1].roll();
+		
+		return executarDados();
+	}
+	
+	private int executarDados() {
+		int roll1 = dados[0].getFace();
+		int roll2 = dados[1].getFace();
 		
 		if (players[vez].isPreso()) {
 			if (roll1 == roll2) {
