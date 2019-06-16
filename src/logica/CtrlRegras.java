@@ -54,8 +54,16 @@ public class CtrlRegras {
 			// Escolhendo o numero de jogadores
 			String[] optionsPlayers = {"2 Jogadores", "3 Jogadores", "4 Jogadores", "5 Jogadores", "6 Jogadores"};
 			JComboBox<String> cbbox = new JComboBox<String>(optionsPlayers);
-			JOptionPane.showMessageDialog(null, cbbox, "Número de Jogadores", JOptionPane.QUESTION_MESSAGE);
-			numPlayers = cbbox.getSelectedIndex() + 2; // optionsPlayers[0] -> 2 Jogadores
+			int esc = JOptionPane.showOptionDialog(null, cbbox, "Número de Jogadores",
+					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+			
+			if (esc == JOptionPane.OK_OPTION) {
+				numPlayers = cbbox.getSelectedIndex() + 2; // optionsPlayers[0] -> 2 Jogadores
+			} else {
+				// sair se clicou cancel/X
+				System.exit(0);
+			}
+			
 
 			// Criando jogadores
 			players = new Jogador[this.numPlayers];
