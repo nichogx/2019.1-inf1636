@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileSystemView;
 
 import logica.componentes.Dado;
 import logica.componentes.jogador.Jogador;
@@ -16,7 +19,7 @@ public class CtrlRegras {
 	public final int starterMoney = 2458;
 	public int bankMoney = 50000;
 
-	private int numPlayers = 1;
+	private int numPlayers = -1;
 	private Jogador[] players = null;
 
 	private Dado[] dados = new Dado[2];
@@ -38,40 +41,51 @@ public class CtrlRegras {
 	};
 
 	public CtrlRegras() {
-
-		// Escolhendo o numero de jogadores
-		while(true) {
-			String nplay = JOptionPane.showInputDialog("Numero de Jogadores");
-
-			try {
-				numPlayers = Integer.parseInt(nplay);
-			} catch (NumberFormatException e) {
-				System.out.println(e.getMessage());
-				System.exit(1);
-			}
-
-			if(numPlayers > 0 && numPlayers <= 6) {
-				break;
-			}
-			JOptionPane.showMessageDialog(null,"Insira um numero valido de jogadores (1 a 6)");
-		}
-
-		// Criando jogadores
-		players = new Jogador[this.numPlayers];
-		String coresJogadores[] = {"Vermelho", "Azul", "Laranja", "Amarelo", "Roxo", "Cinza"};
-		for (int i = 0; i < this.numPlayers; i++) {
-			players[i] = new Jogador(starterMoney, coresJogadores[i]);
-		}
-
-		// Criando dados
-		dados[0] = new Dado();
-		dados[1] = new Dado();
 		
-		// preenche e faz shuffle das cartas
-		for (int i = 0; i < 30; i++) {
-			cartasSortes.add(i);
+		// Escolher nova partida ou load de jogo salvo
+		String[] optionsGame = {"Nova Partida", "Continuar"};
+		int optGame = JOptionPane.showOptionDialog(null, "Iniciar uma nova partida ou continuar de jogo salvo?", 
+				"Iniciar Partida", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionsGame, optionsGame[0]);
+		
+		if (optGame == -1) {
+			// sair caso tenha clicado X
+			System.exit(0);
+		} else if (optGame == 0) { // Nova partida
+			// Escolhendo o numero de jogadores
+			String[] optionsPlayers = {"2 Jogadores", "3 Jogadores", "4 Jogadores", "5 Jogadores", "6 Jogadores"};
+			JComboBox<String> cbbox = new JComboBox<String>(optionsPlayers);
+			JOptionPane.showMessageDialog(null, cbbox, "Número de Jogadores", JOptionPane.QUESTION_MESSAGE);
+			numPlayers = cbbox.getSelectedIndex() + 2; // optionsPlayers[0] -> 2 Jogadores
+
+			// Criando jogadores
+			players = new Jogador[this.numPlayers];
+			String coresJogadores[] = {"Vermelho", "Azul", "Laranja", "Amarelo", "Roxo", "Cinza"};
+			for (int i = 0; i < this.numPlayers; i++) {
+				players[i] = new Jogador(starterMoney, coresJogadores[i]);
+			}
+
+			// Criando dados
+			dados[0] = new Dado();
+			dados[1] = new Dado();
+			
+			// preenche e faz shuffle das cartas
+			for (int i = 0; i < 30; i++) {
+				cartasSortes.add(i);
+			}
+			Collections.shuffle(cartasSortes);
+		} else { // Jogo Salvo
+			JFileChooser fc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+			
+			if (fc.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+				// sair caso tenha clicado cancel ou X
+				System.exit(0);
+			}
+			
+			// TODO carregar de jogo salvo
+			JOptionPane.showMessageDialog(null, "Não implementado.\nPath: " + fc.getSelectedFile().getAbsolutePath());
+			System.out.println(fc.getSelectedFile().getAbsolutePath());
+			System.exit(0); // TODO tirar, é pra não dar crash (jogo não setado)
 		}
-		Collections.shuffle(cartasSortes);
 	}
 
 	public int getNumPlayers() {
