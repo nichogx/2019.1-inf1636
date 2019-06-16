@@ -169,7 +169,7 @@ public class PBanco extends JPanel implements MouseListener {
 		// se clicar nos dados
 		int dsize = (int) (this.dadosFaces[0].getWidth(null) * 0.25);
 		if (x > (int) (frame.LARG_DEFAULT/2 - dsize * 1.2) && y > frame.ALT_DEFAULT/2 + dsize
-			&& x < (int) (frame.LARG_DEFAULT/2 - dsize * 1.2) + 180 && x < frame.ALT_DEFAULT/2 + dsize + 76) {
+			&& x < (int) (frame.LARG_DEFAULT/2 - dsize * 1.2) + 180 && y < frame.ALT_DEFAULT/2 + dsize + 76) {
 			// rodar vez e mostrar a nova carta
 			int valDados = ctrl.rolarDados();
 			this.repaint();
