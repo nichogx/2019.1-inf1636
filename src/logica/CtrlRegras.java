@@ -35,6 +35,7 @@ public class CtrlRegras {
 
 	private int vez = 0;
 	private boolean podeRolarDado = true;
+	private boolean jaIniciou = false; // savegame
 	private int vezesDadosIguais = 0;
 	
 	public ArrayList<Integer> cartasSortes = new ArrayList<Integer>();
@@ -89,6 +90,13 @@ public class CtrlRegras {
 				cartasSortes.add(i);
 			}
 			Collections.shuffle(cartasSortes);
+			
+			try {
+				savegame();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} else { // Jogo Salvo
 			JFileChooser fc = new JFileChooser(".");
 			fc.setFileFilter(new FileNameExtensionFilter("TXT Files (*.txt)", "txt"));
@@ -131,9 +139,10 @@ public class CtrlRegras {
 				matcher.find();
 				bankMoney = Integer.parseInt(matcher.group(2));
 				
-				// recriando jogadores
+				// recriando jogadores e propriedades com dono
 				players = new Jogador[this.numPlayers];
 				String coresJogadores[] = {"Vermelho", "Azul", "Laranja", "Amarelo", "Roxo", "Cinza"};
+				ArrayList<PropOwner> propOwners = new ArrayList<PropOwner>();
 				for (int i = 0; i < numPlayers; i++) {
 					pattern = Pattern.compile("(\t)(player )(" + i + ")(: casa )(\\d+)(, money )(\\d+)(, cartaSair )(false|true)(, preso )(false|true)(;)(\t\t)(propriedades: )(\\[(\\d+, )*\\d*?\\]);");
 					matcher = pattern.matcher(fStr);
@@ -148,9 +157,16 @@ public class CtrlRegras {
 					String[] arrprop = matcher.group(15).split("(, )|\\[|(\\])");
 					if (arrprop.length > 0) {
 						for (String prop : Arrays.copyOfRange(arrprop, 1, arrprop.length)) {
-							players[i].compraPropriedade(Integer.parseInt(prop));
+							int pNum = Integer.parseInt(prop);
+							players[i].compraPropriedade(pNum);
+							propOwners.add(new PropOwner(pNum, i));
 						}
 					}
+				}
+				
+				// seta os owners das propriedades novamente
+				for (PropOwner i : propOwners) {
+					propriedade[i.prop].setProprietario(i.owner);
 				}
 				
 				// recuperar de quem era a vez
@@ -189,6 +205,7 @@ public class CtrlRegras {
 	}
 	
 	public void passaVez() {
+		jaIniciou = false; // savegame
 		int vezInicial = vez;
 		// passa a vez pro próximo
 		vez = (vez + 1) % numPlayers;
@@ -275,7 +292,9 @@ public class CtrlRegras {
 		return roll1 + roll2;
 	}
 
-	public int executaVez(int dados) {		
+	public int executaVez(int dados) {
+		jaIniciou = true; // savegame
+
 		Jogador player = players[vez];
 		player.movePino(dados);
 		
@@ -311,6 +330,7 @@ public class CtrlRegras {
 			if (!player.irPrisao()) {
 				cartasSortes.add(8); // devolver carta de sair da prisão
 			}
+			podeRolarDado = false;
 		} else if (Arrays.asList(casasSorte).contains(casa)) {
 			JOptionPane.showMessageDialog(null,"Você ganhou uma carta!");
 			return execNextCarta();
@@ -431,8 +451,13 @@ public class CtrlRegras {
 		return ret;
 	}
 	
+	public boolean cansave() {
+		return !jaIniciou;
+	}
+	
 	public void savegame() throws IOException {
 		JFileChooser fc = new JFileChooser(".");
+		fc.setFileFilter(new FileNameExtensionFilter("TXT Files (*.txt)", "txt"));
 		
 		if (fc.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
 			// cancelar save caso tenha clicado cancel ou X
@@ -454,5 +479,19 @@ public class CtrlRegras {
 		writer.append("cartasSortes: " + cartasSortes.toString() + ";\n");
 		
 		writer.close();
+		
+		JOptionPane.showMessageDialog(null,"Jogo foi salvo!");
+	}
+}
+
+// usada apenas para load do arquivo
+// relacionar prop <-> owner
+class PropOwner {
+	final int prop;
+	final int owner;
+	
+	PropOwner(int prop, int owner) {
+		this.prop = prop;
+		this.owner = owner;
 	}
 }

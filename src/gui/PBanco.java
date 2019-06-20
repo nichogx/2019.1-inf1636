@@ -22,6 +22,7 @@ public class PBanco extends JPanel implements MouseListener {
 	private Image[] imgPropriedades = new Image[28];
 	
 	private JCheckBox roubar = null;
+	private JButton bSave = null;
 	
 	private int displayCarta = -1; // a carta a mostrar
 
@@ -89,17 +90,31 @@ public class PBanco extends JPanel implements MouseListener {
 		this.add(roubar);
 		
 		// Desenhar botão de passar a vez
-		JButton b = new JButton("Passar Vez");
+		JButton bPass = new JButton("Passar Vez");
 		PBanco p = this;
-		b.setBounds(frame.LARG_DEFAULT/2 - 150/2, 540, 150, 30);
-		b.addActionListener(new ActionListener() {
+		bPass.setBounds(frame.LARG_DEFAULT/2 - 150/2, 540, 150, 30);
+		bPass.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ctrl.passaVez();
 				displayCarta = -1;
 				p.repaint();
 			}
 		});
-		this.add(b);
+		this.add(bPass);
+		
+		// Desenhar botão de salvar
+		bSave = new JButton("Salvar");
+		bSave.setBounds(frame.LARG_DEFAULT/2 + 150/2 + 10, 540, 75, 30);
+		bSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					ctrl.savegame();
+				} catch (IOException e1) {
+					JOptionPane.showMessageDialog(null, "Erro: estado do jogo não pôde ser escrito no arquivo.");
+				}
+			}
+		});
+		this.add(bSave);
 	}
 
 	public void paintComponent(Graphics g) {
@@ -131,7 +146,12 @@ public class PBanco extends JPanel implements MouseListener {
 				null
 		);
 		
-		
+		// Habilitar/desabilitar salvamento
+		if (ctrl.cansave()) {
+			bSave.setEnabled(true);
+		} else {
+			bSave.setEnabled(false);
+		}
 		
 		// Desenhar carta
 		if (displayCarta > -1) { // tem uma carta para display
