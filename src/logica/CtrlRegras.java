@@ -1,13 +1,20 @@
 package logica;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileSystemView;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import logica.componentes.Dado;
 import logica.componentes.jogador.Jogador;
@@ -83,17 +90,93 @@ public class CtrlRegras {
 			}
 			Collections.shuffle(cartasSortes);
 		} else { // Jogo Salvo
-			JFileChooser fc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-			
+			JFileChooser fc = new JFileChooser(".");
+			fc.setFileFilter(new FileNameExtensionFilter("TXT Files (*.txt)", "txt"));
+
 			if (fc.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
 				// sair caso tenha clicado cancel ou X
 				System.exit(0);
 			}
 			
-			// TODO carregar de jogo salvo
-			JOptionPane.showMessageDialog(null, "Não implementado.\nPath: " + fc.getSelectedFile().getAbsolutePath());
-			System.out.println(fc.getSelectedFile().getAbsolutePath());
-			System.exit(0); // TODO tirar, é pra não dar crash (jogo não setado)
+			if (fc.getSelectedFile().length() > 10000) {
+				JOptionPane.showMessageDialog(null, "Erro: arquivo muito grande. Provavelmente não foi gerado pelo jogo.");
+				System.exit(0);
+			}
+			
+			Scanner sc = null;
+			String fStr = null;
+			try {
+				sc = new Scanner(fc.getSelectedFile());
+				while (sc.hasNextLine()) {
+					fStr += sc.nextLine();
+				}
+			} catch (FileNotFoundException e) {
+				JOptionPane.showMessageDialog(null, "Erro: arquivo não encontrado.");
+				System.exit(0);
+			}
+			
+			try {
+				Pattern pattern;
+				Matcher matcher;
+				
+				// recolocando número de jogadores
+				pattern = Pattern.compile("(numplayers: )(\\d+)(;)");
+				matcher = pattern.matcher(fStr);
+				matcher.find();
+				numPlayers = Integer.parseInt(matcher.group(2));
+				
+				// recolocando dinheiro do banco
+				pattern = Pattern.compile("(bankmoney: )(\\d+)(;)");
+				matcher = pattern.matcher(fStr);
+				matcher.find();
+				bankMoney = Integer.parseInt(matcher.group(2));
+				
+				// recriando jogadores
+				players = new Jogador[this.numPlayers];
+				String coresJogadores[] = {"Vermelho", "Azul", "Laranja", "Amarelo", "Roxo", "Cinza"};
+				for (int i = 0; i < numPlayers; i++) {
+					pattern = Pattern.compile("(\t)(player )(" + i + ")(: casa )(\\d+)(, money )(\\d+)(, cartaSair )(false|true)(, preso )(false|true)(;)(\t\t)(propriedades: )(\\[(\\d+, )*\\d*?\\]);");
+					matcher = pattern.matcher(fStr);
+					matcher.find();
+					int casa = Integer.parseInt(matcher.group(5));
+					int money = Integer.parseInt(matcher.group(7));
+					boolean cartaSair = Boolean.parseBoolean(matcher.group(9));
+					boolean preso = Boolean.parseBoolean(matcher.group(11));
+					
+					players[i] = new Jogador(money, coresJogadores[i], casa, cartaSair, preso);
+
+					String[] arrprop = matcher.group(15).split("(, )|\\[|(\\])");
+					if (arrprop.length > 0) {
+						for (String prop : Arrays.copyOfRange(arrprop, 1, arrprop.length)) {
+							players[i].compraPropriedade(Integer.parseInt(prop));
+						}
+					}
+				}
+				
+				// recuperar de quem era a vez
+				pattern = Pattern.compile("(vez: )(\\d+)(;)");
+				matcher = pattern.matcher(fStr);
+				matcher.find();
+				vez = Integer.parseInt(matcher.group(2));
+				
+				// recuperar as cartas de sorte reves
+				pattern = Pattern.compile("(cartasSortes: )(\\[(\\d+, )*\\d*?\\]);");
+				matcher = pattern.matcher(fStr);
+				matcher.find();
+				String[] arrcartas = matcher.group(2).split("(, )|\\[|(\\])");
+				if (arrcartas.length > 0) {
+					for (String carta : Arrays.copyOfRange(arrcartas, 1, arrcartas.length)) {
+						cartasSortes.add(Integer.parseInt(carta));
+					}
+				}
+			} catch (IllegalStateException e) {
+				JOptionPane.showMessageDialog(null, "Erro: arquivo em formato inválido.");
+				System.exit(0);
+			}
+			
+			// recriando dados (default)
+			dados[0] = new Dado();
+			dados[1] = new Dado();
 		}
 	}
 
@@ -346,5 +429,30 @@ public class CtrlRegras {
 			ret[i] = sorted[i];
 		}
 		return ret;
+	}
+	
+	public void savegame() throws IOException {
+		JFileChooser fc = new JFileChooser(".");
+		
+		if (fc.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+			// cancelar save caso tenha clicado cancel ou X
+			return;
+		}
+		
+		File file = fc.getSelectedFile();
+		
+		FileWriter writer = new FileWriter(file);
+		
+		writer.append("bankmoney: " + bankMoney + ";\n");
+		writer.append("numplayers: " + numPlayers + ";\n");
+		for (int i = 0; i < this.numPlayers; i++) {
+			writer.append("\tplayer " + i + ": ");
+			writer.append(players[i].genSaveString());
+			writer.append(";\n");
+		}
+		writer.append("vez: " + vez + ";\n");
+		writer.append("cartasSortes: " + cartasSortes.toString() + ";\n");
+		
+		writer.close();
 	}
 }

@@ -35,6 +35,13 @@ public class Jogador implements JogadorInfo {
 			corobj = new Color(0x999999);
 		}
 	}
+	
+	public Jogador(int money, String cor, int casa, boolean cartaSair, boolean preso) {
+		this(money, cor);
+		pin.irPara(casa);
+		this.cartaSair = cartaSair;
+		this.preso = preso;
+	}
 
 	public void movePino(int res_dados) {
 		pin.mover(res_dados);
@@ -125,5 +132,16 @@ public class Jogador implements JogadorInfo {
 	
 	public Color getCorObj() {
 		return corobj;
+	}
+	
+	public String genSaveString() {
+		String ret = "";
+		
+		ret += String.format("casa %d, money %d, cartaSair %b, preso %b;\n",
+				pin.getCasa(), money, cartaSair, preso);
+		
+		ret += "\t\tpropriedades: " + propriedades.toString();
+		
+		return ret;
 	}
 }
