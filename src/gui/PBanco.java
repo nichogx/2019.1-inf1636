@@ -110,7 +110,7 @@ public class PBanco extends JPanel implements MouseListener {
 				try {
 					ctrl.savegame();
 				} catch (IOException e1) {
-					JOptionPane.showMessageDialog(null, "Erro: estado do jogo nï¿½o pï¿½de ser escrito no arquivo.");
+					JOptionPane.showMessageDialog(null, "Erro: estado do jogo não pôde ser escrito no arquivo.");
 				}
 			}
 		});
@@ -163,7 +163,7 @@ public class PBanco extends JPanel implements MouseListener {
 		
 		// Escrever vez de quem
 		g2d.setFont(new Font("Arial", Font.PLAIN, 18));
-		g2d.drawString("ï¿½ a vez de: Jogador", 110, 130);
+		g2d.drawString("É a vez de: Jogador", 110, 130);
 		g2d.setFont(new Font("Arial", Font.BOLD, 20));
 		g2d.setColor(ctrl.getPlayerInfo().getCorObj());
 		g2d.drawString(ctrl.getPlayerInfo().getCor().toUpperCase(), 275, 130);

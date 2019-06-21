@@ -90,13 +90,6 @@ public class CtrlRegras {
 				cartasSortes.add(i);
 			}
 			Collections.shuffle(cartasSortes);
-			
-			try {
-				savegame();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		} else { // Jogo Salvo
 			JFileChooser fc = new JFileChooser(".");
 			fc.setFileFilter(new FileNameExtensionFilter("TXT Files (*.txt)", "txt"));
