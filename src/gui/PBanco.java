@@ -92,6 +92,9 @@ public class PBanco extends JPanel implements MouseListener {
 			}
 		});
 		this.add(b);
+		
+		// Desenhar segunda frame
+		
 	}
 
 	public void paintComponent(Graphics g) {
@@ -131,6 +134,7 @@ public class PBanco extends JPanel implements MouseListener {
 		} else if(displayCarta < -1) {
 			g2d.drawImage(imgPropriedades[-displayCarta-2], 350, 150, null);
 		}
+		displayCarta = -1;
 		
 		// Escrever vez de quem
 		g2d.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -172,12 +176,11 @@ public class PBanco extends JPanel implements MouseListener {
 			&& x < (int) (frame.LARG_DEFAULT/2 - dsize * 1.2) + 180 && x < frame.ALT_DEFAULT/2 + dsize + 76) {
 			// rodar vez e mostrar a nova carta
 			int valDados = ctrl.rolarDados();
-			this.repaint();
 			if (valDados != 0) {
+				this.repaint();
 				displayCarta = ctrl.executaVez(valDados);
+				this.repaint();
 			}
-
-			this.repaint();
 		}
 
 		//System.out.printf("x = %d, y = %d\n", x,y); //Para encontrar a posicao em um determinado ponto

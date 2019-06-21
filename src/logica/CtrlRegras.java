@@ -239,14 +239,44 @@ public class CtrlRegras {
 		
 		if(propriedade[prop].getProprietario() != -1) {
 			if (propriedade[prop] instanceof Empresa) {
+				boolean playerFaliu = false;
 				int aluguel = ((Empresa)propriedade[prop]).getAluguel(dados[0].getFace()+dados[1].getFace());
-				players[vez].modifyMoney(-aluguel);
-				JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+propriedade[prop].getNome()+" do jogador "+players[propriedade[prop].getProprietario()].getCor());
+				int resultado = players[vez].modifyMoney(-aluguel);
+				while(resultado < 0 && !playerFaliu) {
+					int resultadoAnt = resultado;
+					JOptionPane.showMessageDialog(null, "Você não tem dinheiro o suficiente para pagar o aluguel ($"+aluguel+") da propriedade "+propriedade[prop].getNome()+" do jogador "+players[propriedade[prop].getProprietario()].getCor()+". Venda uma de suas propriedades para compensar a falta de dinheiro ($"+(-resultado)+").");
+					resultado = execVendaProp();
+					
+					if (resultado == resultadoAnt) {
+						playerFaliu = true;
+					}
+				}
+				
+				if(!playerFaliu)
+					JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+propriedade[prop].getNome()+" do jogador "+players[propriedade[prop].getProprietario()].getCor());
+				else
+					JOptionPane.showMessageDialog(null, "Você não pagou $"+aluguel+" em aluguel para a propriedade "+propriedade[prop].getNome()+" do jogador "+players[propriedade[prop].getProprietario()].getCor()+" e por isso você faliu!");
+			
 			} else {
+				boolean playerFaliu = false;
 				int aluguel = ((Terreno)propriedade[prop]).getAluguel();
-				players[vez].modifyMoney(-aluguel);
-				JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+propriedade[prop].getNome()+" do jogador "+players[propriedade[prop].getProprietario()].getCor());
+				int resultado = players[vez].modifyMoney(-aluguel);
+				while(resultado < 0 && !playerFaliu) {
+					int resultadoAnt = resultado;
+					JOptionPane.showMessageDialog(null, "Você não tem dinheiro o suficiente para pagar o aluguel ($"+aluguel+") da propriedade "+propriedade[prop].getNome()+" do jogador "+players[propriedade[prop].getProprietario()].getCor()+". Venda uma de suas propriedades para compensar a falta de dinheiro ($"+(-resultado)+").");
+					resultado = execVendaProp();
+					
+					if (resultado == resultadoAnt) {
+						playerFaliu = true;
+					}
+				}
+				
+				if(!playerFaliu)
+					JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+propriedade[prop].getNome()+" do jogador "+players[propriedade[prop].getProprietario()].getCor());
+				else
+					JOptionPane.showMessageDialog(null, "Você não pagou $"+aluguel+" em aluguel para a propriedade "+propriedade[prop].getNome()+" do jogador "+players[propriedade[prop].getProprietario()].getCor()+" e por isso você faliu!");
 			}
+			
 		} else {
 			String[] options = {"Sim", "Nao"};
 			int resp = JOptionPane.showOptionDialog(null, "Deseja comprar a propriedade: "+propriedade[prop].getNome()+" por $"+propriedade[prop].getPreco()+"?",
@@ -258,6 +288,7 @@ public class CtrlRegras {
 				} else {
 					players[vez].modifyMoney(-propriedade[prop].getPreco());
 					propriedade[prop].setProprietario(vez);
+					players[vez].compraPropriedade(prop);
 					JOptionPane.showMessageDialog(null, "Você comprou a propriedade: "+propriedade[prop].getNome()+" por $"+propriedade[prop].getPreco());
 				}
 			}
@@ -266,6 +297,10 @@ public class CtrlRegras {
 		
 		
 		return -prop-2;
+	}
+	
+	public int execVendaProp() {
+		return 0;
 	}
 	
 	/**
