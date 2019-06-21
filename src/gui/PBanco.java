@@ -21,6 +21,9 @@ public class PBanco extends JPanel implements MouseListener {
 	private Image[] imgSortes = new Image[30];
 	private Image[] imgPropriedades = new Image[28];
 	
+	private JCheckBox roubar = null;
+	private JButton bSave = null;
+	
 	private int displayCarta = -1; // a carta a mostrar
 
 	public PBanco(CtrlRegras c, FBanco frame) {
@@ -80,21 +83,38 @@ public class PBanco extends JPanel implements MouseListener {
 		this.addMouseListener(this);
 		this.setLayout(null);
 		
-		// Desenhar botão de passar a vez
-		JButton b = new JButton("Passar Vez");
+		// Desenhar checkbox roubar
+		roubar = new JCheckBox("Escolher valor dos dados");
+		roubar.setBounds(105, 570, 180, 30);
+		roubar.setOpaque(false);
+		this.add(roubar);
+		
+		// Desenhar botï¿½o de passar a vez
+		JButton bPass = new JButton("Passar Vez");
 		PBanco p = this;
-		b.setBounds(frame.LARG_DEFAULT/2 - 150/2, 540, 150, 30);
-		b.addActionListener(new ActionListener() {
+		bPass.setBounds(frame.LARG_DEFAULT/2 - 150/2, 540, 150, 30);
+		bPass.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ctrl.passaVez();
 				displayCarta = -1;
 				p.repaint();
 			}
 		});
-		this.add(b);
+		this.add(bPass);
 		
-		// Desenhar segunda frame
-		
+		// Desenhar botï¿½o de salvar
+		bSave = new JButton("Salvar");
+		bSave.setBounds(frame.LARG_DEFAULT/2 + 150/2 + 10, 540, 75, 30);
+		bSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					ctrl.savegame();
+				} catch (IOException e1) {
+					JOptionPane.showMessageDialog(null, "Erro: estado do jogo nï¿½o pï¿½de ser escrito no arquivo.");
+				}
+			}
+		});
+		this.add(bSave);
 	}
 
 	public void paintComponent(Graphics g) {
@@ -126,7 +146,12 @@ public class PBanco extends JPanel implements MouseListener {
 				null
 		);
 		
-		
+		// Habilitar/desabilitar salvamento
+		if (ctrl.cansave()) {
+			bSave.setEnabled(true);
+		} else {
+			bSave.setEnabled(false);
+		}
 		
 		// Desenhar carta
 		if (displayCarta > -1) { // tem uma carta para display
@@ -138,7 +163,7 @@ public class PBanco extends JPanel implements MouseListener {
 		
 		// Escrever vez de quem
 		g2d.setFont(new Font("Arial", Font.PLAIN, 18));
-		g2d.drawString("É a vez de: Jogador", 110, 130);
+		g2d.drawString("ï¿½ a vez de: Jogador", 110, 130);
 		g2d.setFont(new Font("Arial", Font.BOLD, 20));
 		g2d.setColor(ctrl.getPlayerInfo().getCorObj());
 		g2d.drawString(ctrl.getPlayerInfo().getCor().toUpperCase(), 275, 130);
@@ -173,9 +198,15 @@ public class PBanco extends JPanel implements MouseListener {
 		// se clicar nos dados
 		int dsize = (int) (this.dadosFaces[0].getWidth(null) * 0.25);
 		if (x > (int) (frame.LARG_DEFAULT/2 - dsize * 1.2) && y > frame.ALT_DEFAULT/2 + dsize
-			&& x < (int) (frame.LARG_DEFAULT/2 - dsize * 1.2) + 180 && x < frame.ALT_DEFAULT/2 + dsize + 76) {
+			&& x < (int) (frame.LARG_DEFAULT/2 - dsize * 1.2) + 180 && y < frame.ALT_DEFAULT/2 + dsize + 76) {
 			// rodar vez e mostrar a nova carta
-			int valDados = ctrl.rolarDados();
+			int valDados = 0;
+			if (roubar.isSelected()) {
+				valDados = ctrl.rolarDadosRoubar();
+			} else {
+				valDados = ctrl.rolarDados();
+			}
+
 			if (valDados != 0) {
 				this.repaint();
 				displayCarta = ctrl.executaVez(valDados);

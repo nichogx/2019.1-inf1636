@@ -13,6 +13,10 @@ public class Dado {
 		return this.face; // inteiro entre 1 e 6
 	}
 	
+	public void forceFace(int face) {
+		this.face = face;
+	}
+	
 	public int getFace() {
 		return this.face;
 	}

@@ -1,10 +1,20 @@
 package logica;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import logica.componentes.Dado;
 import logica.componentes.jogador.Jogador;
@@ -16,7 +26,7 @@ public class CtrlRegras {
 	public final int starterMoney = 2458;
 	public int bankMoney = 50000;
 
-	private int numPlayers = 1;
+	private int numPlayers = -1;
 	private Jogador[] players = null;
 
 	private Dado[] dados = new Dado[2];
@@ -25,6 +35,7 @@ public class CtrlRegras {
 
 	private int vez = 0;
 	private boolean podeRolarDado = true;
+	private boolean jaIniciou = false; // savegame
 	private int vezesDadosIguais = 0;
 	
 	public ArrayList<Integer> cartasSortes = new ArrayList<Integer>();
@@ -38,40 +49,151 @@ public class CtrlRegras {
 	};
 
 	public CtrlRegras() {
-
-		// Escolhendo o numero de jogadores
-		while(true) {
-			String nplay = JOptionPane.showInputDialog("Numero de Jogadores");
-
-			try {
-				numPlayers = Integer.parseInt(nplay);
-			} catch (NumberFormatException e) {
-				System.out.println(e.getMessage());
-				System.exit(1);
-			}
-
-			if(numPlayers > 0 && numPlayers <= 6) {
-				break;
-			}
-			JOptionPane.showMessageDialog(null,"Insira um numero valido de jogadores (1 a 6)");
-		}
-
-		// Criando jogadores
-		players = new Jogador[this.numPlayers];
-		String coresJogadores[] = {"Vermelho", "Azul", "Laranja", "Amarelo", "Roxo", "Cinza"};
-		for (int i = 0; i < this.numPlayers; i++) {
-			players[i] = new Jogador(starterMoney, coresJogadores[i]);
-		}
-
-		// Criando dados
-		dados[0] = new Dado();
-		dados[1] = new Dado();
 		
-		// preenche e faz shuffle das cartas
-		for (int i = 0; i < 30; i++) {
-			cartasSortes.add(i);
+		// Escolher nova partida ou load de jogo salvo
+		String[] optionsGame = {"Nova Partida", "Continuar"};
+		int optGame = JOptionPane.showOptionDialog(null, "Iniciar uma nova partida ou continuar de jogo salvo?", 
+				"Iniciar Partida", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, optionsGame, optionsGame[0]);
+		
+		if (optGame == -1) {
+			// sair caso tenha clicado X
+			System.exit(0);
+		} else if (optGame == 0) { // Nova partida
+			// Escolhendo o numero de jogadores
+			String[] optionsPlayers = {"2 Jogadores", "3 Jogadores", "4 Jogadores", "5 Jogadores", "6 Jogadores"};
+			JComboBox<String> cbbox = new JComboBox<String>(optionsPlayers);
+			Object[] cbboxDisplay = {"Escolha o número de jogadores:", cbbox};
+			int esc = JOptionPane.showOptionDialog(null, cbboxDisplay, "Número de Jogadores",
+					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+			
+			if (esc == JOptionPane.OK_OPTION) {
+				numPlayers = cbbox.getSelectedIndex() + 2; // optionsPlayers[0] -> 2 Jogadores
+			} else {
+				// sair se clicou cancel/X
+				System.exit(0);
+			}
+			
+
+			// Criando jogadores
+			players = new Jogador[this.numPlayers];
+			String coresJogadores[] = {"Vermelho", "Azul", "Laranja", "Amarelo", "Roxo", "Cinza"};
+			for (int i = 0; i < this.numPlayers; i++) {
+				players[i] = new Jogador(starterMoney, coresJogadores[i]);
+			}
+
+			// Criando dados
+			dados[0] = new Dado();
+			dados[1] = new Dado();
+			
+			// preenche e faz shuffle das cartas
+			for (int i = 0; i < 30; i++) {
+				cartasSortes.add(i);
+			}
+			Collections.shuffle(cartasSortes);
+			
+			try {
+				savegame();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else { // Jogo Salvo
+			JFileChooser fc = new JFileChooser(".");
+			fc.setFileFilter(new FileNameExtensionFilter("TXT Files (*.txt)", "txt"));
+
+			if (fc.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+				// sair caso tenha clicado cancel ou X
+				System.exit(0);
+			}
+			
+			if (fc.getSelectedFile().length() > 10000) {
+				JOptionPane.showMessageDialog(null, "Erro: arquivo muito grande. Provavelmente não foi gerado pelo jogo.");
+				System.exit(0);
+			}
+			
+			Scanner sc = null;
+			String fStr = null;
+			try {
+				sc = new Scanner(fc.getSelectedFile());
+				while (sc.hasNextLine()) {
+					fStr += sc.nextLine();
+				}
+			} catch (FileNotFoundException e) {
+				JOptionPane.showMessageDialog(null, "Erro: arquivo não encontrado.");
+				System.exit(0);
+			}
+			
+			try {
+				Pattern pattern;
+				Matcher matcher;
+				
+				// recolocando número de jogadores
+				pattern = Pattern.compile("(numplayers: )(\\d+)(;)");
+				matcher = pattern.matcher(fStr);
+				matcher.find();
+				numPlayers = Integer.parseInt(matcher.group(2));
+				
+				// recolocando dinheiro do banco
+				pattern = Pattern.compile("(bankmoney: )(\\d+)(;)");
+				matcher = pattern.matcher(fStr);
+				matcher.find();
+				bankMoney = Integer.parseInt(matcher.group(2));
+				
+				// recriando jogadores e propriedades com dono
+				players = new Jogador[this.numPlayers];
+				String coresJogadores[] = {"Vermelho", "Azul", "Laranja", "Amarelo", "Roxo", "Cinza"};
+				ArrayList<PropOwner> propOwners = new ArrayList<PropOwner>();
+				for (int i = 0; i < numPlayers; i++) {
+					pattern = Pattern.compile("(\t)(player )(" + i + ")(: casa )(\\d+)(, money )(\\d+)(, cartaSair )(false|true)(, preso )(false|true)(;)(\t\t)(propriedades: )(\\[(\\d+, )*\\d*?\\]);");
+					matcher = pattern.matcher(fStr);
+					matcher.find();
+					int casa = Integer.parseInt(matcher.group(5));
+					int money = Integer.parseInt(matcher.group(7));
+					boolean cartaSair = Boolean.parseBoolean(matcher.group(9));
+					boolean preso = Boolean.parseBoolean(matcher.group(11));
+					
+					players[i] = new Jogador(money, coresJogadores[i], casa, cartaSair, preso);
+
+					String[] arrprop = matcher.group(15).split("(, )|\\[|(\\])");
+					if (arrprop.length > 0) {
+						for (String prop : Arrays.copyOfRange(arrprop, 1, arrprop.length)) {
+							int pNum = Integer.parseInt(prop);
+							players[i].compraPropriedade(pNum);
+							propOwners.add(new PropOwner(pNum, i));
+						}
+					}
+				}
+				
+				// seta os owners das propriedades novamente
+				for (PropOwner i : propOwners) {
+					propriedade[i.prop].setProprietario(i.owner);
+				}
+				
+				// recuperar de quem era a vez
+				pattern = Pattern.compile("(vez: )(\\d+)(;)");
+				matcher = pattern.matcher(fStr);
+				matcher.find();
+				vez = Integer.parseInt(matcher.group(2));
+				
+				// recuperar as cartas de sorte reves
+				pattern = Pattern.compile("(cartasSortes: )(\\[(\\d+, )*\\d*?\\]);");
+				matcher = pattern.matcher(fStr);
+				matcher.find();
+				String[] arrcartas = matcher.group(2).split("(, )|\\[|(\\])");
+				if (arrcartas.length > 0) {
+					for (String carta : Arrays.copyOfRange(arrcartas, 1, arrcartas.length)) {
+						cartasSortes.add(Integer.parseInt(carta));
+					}
+				}
+			} catch (IllegalStateException e) {
+				JOptionPane.showMessageDialog(null, "Erro: arquivo em formato inválido.");
+				System.exit(0);
+			}
+			
+			// recriando dados (default)
+			dados[0] = new Dado();
+			dados[1] = new Dado();
 		}
-		Collections.shuffle(cartasSortes);
 	}
 
 	public int getNumPlayers() {
@@ -83,6 +205,7 @@ public class CtrlRegras {
 	}
 	
 	public void passaVez() {
+		jaIniciou = false; // savegame
 		int vezInicial = vez;
 		// passa a vez pro próximo
 		vez = (vez + 1) % numPlayers;
@@ -98,14 +221,45 @@ public class CtrlRegras {
 		vezesDadosIguais = 0;
 	}
 	
+	public int rolarDadosRoubar() {
+		if (!podeRolarDado) {
+			JOptionPane.showMessageDialog(null,"Você não pode mais rolar o dado.");
+			return 0;
+		}
+		
+		String[] valDados = {"1", "2", "3", "4", "5", "6"};
+		JComboBox<String> d1 = new JComboBox<String>(valDados);
+		JComboBox<String> d2 = new JComboBox<String>(valDados);
+		
+		Object[] diags = {"Escolha valores para os dois dados\nDado 1:", d1, "Dado 2:", d2};
+		int esc = JOptionPane.showOptionDialog(null, diags, "Valor dos Dados",
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+		
+		if (esc != JOptionPane.OK_OPTION) {
+			return rolarDados();
+		}
+		
+		dados[0].forceFace(d1.getSelectedIndex() + 1);
+		dados[1].forceFace(d2.getSelectedIndex() + 1);
+		
+		return executarDados();
+	}
+	
 	public int rolarDados() {
 		if (!podeRolarDado) {
 			JOptionPane.showMessageDialog(null,"Você não pode mais rolar o dado.");
 			return 0;
 		}
 		
-		int roll1 = dados[0].roll();
-		int roll2 = dados[1].roll();
+		dados[0].roll();
+		dados[1].roll();
+		
+		return executarDados();
+	}
+	
+	private int executarDados() {
+		int roll1 = dados[0].getFace();
+		int roll2 = dados[1].getFace();
 		
 		if (players[vez].isPreso()) {
 			if (roll1 == roll2) {
@@ -138,7 +292,9 @@ public class CtrlRegras {
 		return roll1 + roll2;
 	}
 
-	public int executaVez(int dados) {		
+	public int executaVez(int dados) {
+		jaIniciou = true; // savegame
+
 		Jogador player = players[vez];
 		player.movePino(dados);
 		
@@ -174,6 +330,7 @@ public class CtrlRegras {
 			if (!player.irPrisao()) {
 				cartasSortes.add(8); // devolver carta de sair da prisão
 			}
+			podeRolarDado = false;
 		} else if (Arrays.asList(casasSorte).contains(casa)) {
 			JOptionPane.showMessageDialog(null,"Você ganhou uma carta!");
 			return execNextCarta();
@@ -327,5 +484,49 @@ public class CtrlRegras {
 			ret[i] = sorted[i];
 		}
 		return ret;
+	}
+	
+	public boolean cansave() {
+		return !jaIniciou;
+	}
+	
+	public void savegame() throws IOException {
+		JFileChooser fc = new JFileChooser(".");
+		fc.setFileFilter(new FileNameExtensionFilter("TXT Files (*.txt)", "txt"));
+		
+		if (fc.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+			// cancelar save caso tenha clicado cancel ou X
+			return;
+		}
+		
+		File file = fc.getSelectedFile();
+		
+		FileWriter writer = new FileWriter(file);
+		
+		writer.append("bankmoney: " + bankMoney + ";\n");
+		writer.append("numplayers: " + numPlayers + ";\n");
+		for (int i = 0; i < this.numPlayers; i++) {
+			writer.append("\tplayer " + i + ": ");
+			writer.append(players[i].genSaveString());
+			writer.append(";\n");
+		}
+		writer.append("vez: " + vez + ";\n");
+		writer.append("cartasSortes: " + cartasSortes.toString() + ";\n");
+		
+		writer.close();
+		
+		JOptionPane.showMessageDialog(null,"Jogo foi salvo!");
+	}
+}
+
+// usada apenas para load do arquivo
+// relacionar prop <-> owner
+class PropOwner {
+	final int prop;
+	final int owner;
+	
+	PropOwner(int prop, int owner) {
+		this.prop = prop;
+		this.owner = owner;
 	}
 }
