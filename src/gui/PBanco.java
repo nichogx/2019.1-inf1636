@@ -117,6 +117,16 @@ public class PBanco extends JPanel implements MouseListener {
 			}
 		});
 		this.add(bSave);
+		
+		// Desenhar botão de finalizar jogo
+		JButton bFin = new JButton("Finalizar");
+		bFin.setBounds(frame.LARG_DEFAULT/2 - 150/2 - 10 - 100, 540, 100, 30);
+		bFin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CtrlRegras.getInstance().endgame();
+			}
+		});
+		this.add(bFin);
 	}
 
 	public void paintComponent(Graphics g) {

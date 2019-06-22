@@ -471,11 +471,7 @@ public class CtrlRegras {
 		return 0;
 	}
 	
-	/**
-	 * 
-	 * @return array de posições do jogador (primeiro é ganhador)
-	 */
-	public int[] endgame() {
+	public void endgame() {
 		// não dá pra usar sort em int[] com função, só em Integer[]
 		Integer[] sorted = new Integer[numPlayers];
 		for (int i = 0; i < numPlayers; i++) {
@@ -489,12 +485,21 @@ public class CtrlRegras {
 			return players[b].getMoney() - players[a].getMoney();
 		});
 		
-		// converter para tipo primitivo int[]
-		int[] ret = new int[numPlayers];
+		String str = "FIM DE JOGO!\nPosição final dos jogadores:\n";
+		int count = 1;
 		for (int i = 0; i < numPlayers; i++) {
-			ret[i] = sorted[i];
+			int pl = sorted[i];
+			str += String.format("%d: %-9s $%5d.00\n", count, players[pl].getCor() + " -", players[pl].getMoney());
+			
+			System.out.printf("%d %d\n", i, i+1);
+			if (i + 1 < numPlayers && players[pl].getMoney() != players[sorted[i + 1]].getMoney()) {
+				
+				count++;
+			}
 		}
-		return ret;
+		
+		JOptionPane.showMessageDialog(null, str);
+		System.exit(0);
 	}
 	
 	public boolean cansave() {
