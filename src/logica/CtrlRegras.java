@@ -460,7 +460,19 @@ public class CtrlRegras {
 	}
 	
 	public int execVendaProp() {
+		
 		return 0;
+	}
+	
+	public String[] getJogadorPropriedades() {
+		ArrayList<Integer> propriedadesIndex = players[vez].getPropriedades();
+		String[] nomesProps = new String[propriedadesIndex.size()];
+		
+		for(int i = 0; i < propriedadesIndex.size(); i++) {
+			nomesProps[i] = propriedade[propriedadesIndex.get(i)].getNome();
+		}
+		
+		return nomesProps;
 	}
 	
 	/**
