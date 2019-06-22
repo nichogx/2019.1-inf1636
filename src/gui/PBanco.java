@@ -7,9 +7,10 @@ import java.io.File;
 import java.io.IOException;
 import java.awt.event.*;
 import logica.*;
+import observer.*;
 
 @SuppressWarnings("serial")
-public class PBanco extends JPanel implements MouseListener {
+public class PBanco extends JPanel implements MouseListener,ObservadorIF {
 
 	private FBanco frame = null;
 
@@ -117,6 +118,19 @@ public class PBanco extends JPanel implements MouseListener {
 			}
 		});
 		this.add(bSave);
+		
+		// Desenhar botão de finalizar jogo
+		JButton bFin = new JButton("Finalizar");
+		bFin.setBounds(frame.LARG_DEFAULT/2 - 150/2 - 10 - 100, 540, 100, 30);
+		bFin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CtrlRegras.getInstance().endgame();
+			}
+		});
+		this.add(bFin);
+		
+		// subscribe no observado
+		CtrlRegras.getInstance().add(this);
 	}
 
 	public void paintComponent(Graphics g) {
@@ -177,8 +191,11 @@ public class PBanco extends JPanel implements MouseListener {
 
 		g2d.setFont(new Font("Consolas", Font.PLAIN, 18));
 		CtrlRegras ctrl = CtrlRegras.getInstance();
+		// dinheiro do banco
+		g2d.drawString(String.format("Banco: $%5d.00", ctrl.getBankMoney()), 110, 150);
+		// dinheiro dos jogadores
 		for (int i = 0; i < ctrl.getNumPlayers(); i++) {
-			g2d.drawString(String.format("%-9s $%5d.00", ctrl.getPlayerInfo(i).getCor() + ":", ctrl.getPlayerInfo(i).getMoney()), 110, 150 + 20 * i);
+			g2d.drawString(String.format("%-9s $%5d.00", ctrl.getPlayerInfo(i).getCor() + ":", ctrl.getPlayerInfo(i).getMoney()), 110, 170 + 20 * i);
 			g2d.drawImage(pinImgs[i],
 					ctrl.getPlayerInfo(i).getPosX() + (sizeX + 5) * (i % 3),
 					ctrl.getPlayerInfo(i).getPosY() + (sizeY * (i / 3 % 2 + 1)),
@@ -211,7 +228,6 @@ public class PBanco extends JPanel implements MouseListener {
 			}
 
 			if (valDados != 0) {
-				this.repaint();
 				displayCarta = CtrlRegras.getInstance().executaVez(valDados);
 				this.repaint();
 			}
@@ -222,4 +238,8 @@ public class PBanco extends JPanel implements MouseListener {
 
 	public void mouseReleased(MouseEvent e) {}
 
+	public void notify(ObservadoIF o) {
+		this.repaint();
+		System.out.println("WORKS");
+	}
 }

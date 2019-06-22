@@ -20,10 +20,13 @@ import componentes.Dado;
 import componentes.jogador.Jogador;
 import componentes.jogador.JogadorInfo;
 import componentes.propriedades.*;
+import observer.ObservadoIF;
+import observer.ObservadorIF;
 
-public class CtrlRegras {
+public class CtrlRegras implements ObservadoIF {
 	
 	private static CtrlRegras instance = null;
+	private ArrayList<ObservadorIF> observadores = new ArrayList<ObservadorIF>();
 
 	public final int starterMoney = 2458;
 	public int bankMoney = 50000;
@@ -261,6 +264,9 @@ public class CtrlRegras {
 	}
 	
 	private int executarDados() {
+		// faz o repaint pois mudou estado dos dados
+		this.notificaAll();
+		
 		int roll1 = dados[0].getFace();
 		int roll2 = dados[1].getFace();
 		
@@ -279,9 +285,12 @@ public class CtrlRegras {
 		if (roll1 == roll2) {
 			vezesDadosIguais++;
 			if (vezesDadosIguais >= 3) {
+				boolean foiPreso = players[vez].irPrisao();
+				this.notificaAll();
 				JOptionPane.showMessageDialog(null,"Dados iguais três vezes seguidas! Você foi preso! :(");
-				if (!players[vez].irPrisao()) {
-					cartasSortes.add(8); // devolver carta de sair da prisão
+				if (!foiPreso) {
+					JOptionPane.showMessageDialog(null,"Você usou sua carta de sair da prisão!");
+					cartasSortes.add(8); // devolver carta de sair da prisão pro deck
 				}
 				
 				podeRolarDado = false;
@@ -325,12 +334,17 @@ public class CtrlRegras {
 		if (casa == casaGanha) {
 			JOptionPane.showMessageDialog(null,"Prêmio! Você ganhou $200 :D");
 			player.modifyMoney(200);
+			bankMoney -= 200;
 		} else if (casa == casaPerde) {
 			JOptionPane.showMessageDialog(null,"Impostos. Você perdeu $200 :(");
 			player.modifyMoney(-200);
+			bankMoney += 200;
 		} else if (casa == casaPrisao) {
+			boolean foiPreso = players[vez].irPrisao();
+			this.notificaAll();
 			JOptionPane.showMessageDialog(null,"Azar! Você foi preso! :(");
-			if (!player.irPrisao()) {
+			if (!foiPreso) {
+				JOptionPane.showMessageDialog(null,"Você usou sua carta de sair da prisão!");
 				cartasSortes.add(8); // devolver carta de sair da prisão
 			}
 			podeRolarDado = false;
@@ -358,6 +372,10 @@ public class CtrlRegras {
 		return dados[index].getFace();
 	}
 	
+	public int getBankMoney() {
+		return bankMoney;
+	}
+	
 	/**
 	 * @return int a carta que foi rodada
 	 */
@@ -377,13 +395,17 @@ public class CtrlRegras {
 					players[vez].modifyMoney(50);
 				}
 			}
-		} else if (atual == 22) { // ir para prisão 
-			if (!players[vez].irPrisao()) {
-				cartasSortes.add(8); // devolver carta de sair da prisão
+		} else if (atual == 22) { // ir para prisão
+			boolean foiPreso = players[vez].irPrisao();
+			this.notificaAll();
+			if (!foiPreso) {
+				JOptionPane.showMessageDialog(null,"Você usou sua carta de sair da prisão!");
+				cartasSortes.add(8); // devolver carta de sair da prisão pro deck
 			}
 		} else {
 			// modifica dinheiro do jogador
 			players[vez].modifyMoney(sortes[atual]);
+			bankMoney -= sortes[atual];
 		}
 		
 		// coloca a carta no fim da lista
@@ -447,8 +469,10 @@ public class CtrlRegras {
 					JOptionPane.showMessageDialog(null, "Você não tem dinheiro suficiente para comprar a propriedade: "+propriedade[prop].getNome()+", pois ela custa $"+propriedade[prop].getPreco());
 				} else {
 					players[vez].modifyMoney(-propriedade[prop].getPreco());
+					bankMoney += propriedade[prop].getPreco();
 					propriedade[prop].setProprietario(vez);
 					players[vez].compraPropriedade(prop);
+					notificaAll();
 					JOptionPane.showMessageDialog(null, "Você comprou a propriedade: "+propriedade[prop].getNome()+" por $"+propriedade[prop].getPreco());
 				}
 			}
@@ -479,7 +503,8 @@ public class CtrlRegras {
 	 * 
 	 * @return array de posições do jogador (primeiro é ganhador)
 	 */
-	public int[] endgame() {
+	public void endgame() {
+
 		// não dá pra usar sort em int[] com função, só em Integer[]
 		Integer[] sorted = new Integer[numPlayers];
 		for (int i = 0; i < numPlayers; i++) {
@@ -493,12 +518,20 @@ public class CtrlRegras {
 			return players[b].getMoney() - players[a].getMoney();
 		});
 		
-		// converter para tipo primitivo int[]
-		int[] ret = new int[numPlayers];
+		String str = "FIM DE JOGO!\nPosição final dos jogadores:\n";
+		int count = 1;
 		for (int i = 0; i < numPlayers; i++) {
-			ret[i] = sorted[i];
+			int pl = sorted[i];
+			str += String.format("%d: %-9s $%5d.00\n", count, players[pl].getCor() + " -", players[pl].getMoney());
+			
+			if (i + 1 < numPlayers && players[pl].getMoney() != players[sorted[i + 1]].getMoney()) {
+				
+				count++;
+			}
 		}
-		return ret;
+		
+		JOptionPane.showMessageDialog(null, str);
+		System.exit(0);
 	}
 	
 	public boolean cansave() {
@@ -531,6 +564,20 @@ public class CtrlRegras {
 		writer.close();
 		
 		JOptionPane.showMessageDialog(null,"Jogo foi salvo!");
+	}
+
+	public void add(ObservadorIF o) {
+		observadores.add(o);
+	}
+
+	public void remove(ObservadorIF o) {
+		observadores.remove(o);
+	}
+
+	private void notificaAll() {
+		for (ObservadorIF obs : observadores) {
+			obs.notify(this);
+		}
 	}
 }
 
