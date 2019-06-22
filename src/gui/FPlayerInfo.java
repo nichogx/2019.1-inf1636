@@ -3,8 +3,6 @@ package gui;
 import java.awt.*;
 import javax.swing.*;
 
-import logica.CtrlRegras;
-
 @SuppressWarnings("serial")
 public class FPlayerInfo extends JFrame {
 	

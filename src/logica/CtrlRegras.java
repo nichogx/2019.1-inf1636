@@ -362,6 +362,7 @@ public class CtrlRegras implements ObservadoIF {
 					return execPropriedade(i);
 		}
 		
+		this.notificaAll();
 		return -1;
 	}
 	
