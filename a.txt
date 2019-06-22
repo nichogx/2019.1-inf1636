@@ -1,8 +1,0 @@
-bankmoney: 50000;
-numplayers: 2;
-	player 0: casa 0, money 2458, cartaSair false, preso false;
-		propriedades: [1];
-	player 1: casa 0, money 2458, cartaSair false, preso false;
-		propriedades: [];
-vez: 0;
-cartasSortes: [0, 23, 24, 1, 22, 3, 25, 9, 28, 11, 16, 6, 12, 20, 13, 5, 4, 26, 29, 2, 17, 27, 18, 19, 7, 8, 15, 10, 14, 21];
