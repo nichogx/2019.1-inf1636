@@ -98,7 +98,6 @@ public class PBanco extends JPanel implements MouseListener,ObservadorIF {
 		bPass.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CtrlRegras.getInstance().passaVez();
-				p.repaint();
 				playerFrame.sendRepaint();
 			}
 		});
@@ -227,7 +226,6 @@ public class PBanco extends JPanel implements MouseListener,ObservadorIF {
 
 			if (valDados != 0) {
 				displayCarta = CtrlRegras.getInstance().executaVez(valDados);
-				this.repaint();
 			}
 		}
 
