@@ -20,10 +20,13 @@ import componentes.Dado;
 import componentes.jogador.Jogador;
 import componentes.jogador.JogadorInfo;
 import componentes.propriedades.*;
+import observer.ObservadoIF;
+import observer.ObservadorIF;
 
-public class CtrlRegras {
+public class CtrlRegras implements ObservadoIF {
 	
 	private static CtrlRegras instance = null;
+	private ArrayList<ObservadorIF> observadores = new ArrayList<ObservadorIF>();
 
 	public final int starterMoney = 2458;
 	public int bankMoney = 50000;
@@ -261,6 +264,9 @@ public class CtrlRegras {
 	}
 	
 	private int executarDados() {
+		// faz o repaint pois mudou estado dos dados
+		this.notificaAll();
+		
 		int roll1 = dados[0].getFace();
 		int roll2 = dados[1].getFace();
 		
@@ -279,9 +285,12 @@ public class CtrlRegras {
 		if (roll1 == roll2) {
 			vezesDadosIguais++;
 			if (vezesDadosIguais >= 3) {
+				boolean foiPreso = players[vez].irPrisao();
+				this.notificaAll();
 				JOptionPane.showMessageDialog(null,"Dados iguais três vezes seguidas! Você foi preso! :(");
-				if (!players[vez].irPrisao()) {
-					cartasSortes.add(8); // devolver carta de sair da prisão
+				if (!foiPreso) {
+					JOptionPane.showMessageDialog(null,"Você usou sua carta de sair da prisão!");
+					cartasSortes.add(8); // devolver carta de sair da prisão pro deck
 				}
 				
 				podeRolarDado = false;
@@ -331,8 +340,11 @@ public class CtrlRegras {
 			player.modifyMoney(-200);
 			bankMoney += 200;
 		} else if (casa == casaPrisao) {
+			boolean foiPreso = players[vez].irPrisao();
+			this.notificaAll();
 			JOptionPane.showMessageDialog(null,"Azar! Você foi preso! :(");
-			if (!player.irPrisao()) {
+			if (!foiPreso) {
+				JOptionPane.showMessageDialog(null,"Você usou sua carta de sair da prisão!");
 				cartasSortes.add(8); // devolver carta de sair da prisão
 			}
 			podeRolarDado = false;
@@ -383,9 +395,12 @@ public class CtrlRegras {
 					players[vez].modifyMoney(50);
 				}
 			}
-		} else if (atual == 22) { // ir para prisão 
-			if (!players[vez].irPrisao()) {
-				cartasSortes.add(8); // devolver carta de sair da prisão
+		} else if (atual == 22) { // ir para prisão
+			boolean foiPreso = players[vez].irPrisao();
+			this.notificaAll();
+			if (!foiPreso) {
+				JOptionPane.showMessageDialog(null,"Você usou sua carta de sair da prisão!");
+				cartasSortes.add(8); // devolver carta de sair da prisão pro deck
 			}
 		} else {
 			// modifica dinheiro do jogador
@@ -457,6 +472,7 @@ public class CtrlRegras {
 					bankMoney += propriedade[prop].getPreco();
 					propriedade[prop].setProprietario(vez);
 					players[vez].compraPropriedade(prop);
+					notificaAll();
 					JOptionPane.showMessageDialog(null, "Você comprou a propriedade: "+propriedade[prop].getNome()+" por $"+propriedade[prop].getPreco());
 				}
 			}
@@ -491,7 +507,6 @@ public class CtrlRegras {
 			int pl = sorted[i];
 			str += String.format("%d: %-9s $%5d.00\n", count, players[pl].getCor() + " -", players[pl].getMoney());
 			
-			System.out.printf("%d %d\n", i, i+1);
 			if (i + 1 < numPlayers && players[pl].getMoney() != players[sorted[i + 1]].getMoney()) {
 				
 				count++;
@@ -532,6 +547,20 @@ public class CtrlRegras {
 		writer.close();
 		
 		JOptionPane.showMessageDialog(null,"Jogo foi salvo!");
+	}
+
+	public void add(ObservadorIF o) {
+		observadores.add(o);
+	}
+
+	public void remove(ObservadorIF o) {
+		observadores.remove(o);
+	}
+
+	private void notificaAll() {
+		for (ObservadorIF obs : observadores) {
+			obs.notify(this);
+		}
 	}
 }
 

@@ -7,9 +7,10 @@ import java.io.File;
 import java.io.IOException;
 import java.awt.event.*;
 import logica.*;
+import observer.*;
 
 @SuppressWarnings("serial")
-public class PBanco extends JPanel implements MouseListener {
+public class PBanco extends JPanel implements MouseListener,ObservadorIF {
 
 	private FBanco frame = null;
 
@@ -127,6 +128,9 @@ public class PBanco extends JPanel implements MouseListener {
 			}
 		});
 		this.add(bFin);
+		
+		// subscribe no observado
+		CtrlRegras.getInstance().add(this);
 	}
 
 	public void paintComponent(Graphics g) {
@@ -224,7 +228,6 @@ public class PBanco extends JPanel implements MouseListener {
 			}
 
 			if (valDados != 0) {
-				this.repaint();
 				displayCarta = CtrlRegras.getInstance().executaVez(valDados);
 				this.repaint();
 			}
@@ -235,4 +238,8 @@ public class PBanco extends JPanel implements MouseListener {
 
 	public void mouseReleased(MouseEvent e) {}
 
+	public void notify(ObservadoIF o) {
+		this.repaint();
+		System.out.println("WORKS");
+	}
 }

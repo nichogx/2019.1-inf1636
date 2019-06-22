@@ -95,13 +95,10 @@ public class Jogador implements JogadorInfo {
 	public boolean irPrisao() {
 		pin.irPara(10);
 		if (cartaSair) {
-			JOptionPane.showMessageDialog(null,"Você usou sua carta de sair da prisão!");
 			cartaSair = false;
-			
 			return false;
 		} else {			
 			preso = true;
-			
 			return true;
 		}
 	}
