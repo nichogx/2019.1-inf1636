@@ -24,6 +24,9 @@ public class PBanco extends JPanel implements MouseListener {
 	private JCheckBox roubar = null;
 	private JButton bSave = null;
 	
+	// panel com informações do jogador da vez
+	private FPlayerInfo playerFrame = null;
+	
 	private int displayCarta = -1; // a carta a mostrar
 
 	public PBanco(CtrlRegras c, FBanco frame) {
@@ -82,6 +85,7 @@ public class PBanco extends JPanel implements MouseListener {
 
 		this.addMouseListener(this);
 		this.setLayout(null);
+		playerFrame = new FPlayerInfo(ctrl);
 		
 		// Desenhar checkbox roubar
 		roubar = new JCheckBox("Escolher valor dos dados");
@@ -89,7 +93,7 @@ public class PBanco extends JPanel implements MouseListener {
 		roubar.setOpaque(false);
 		this.add(roubar);
 		
-		// Desenhar botï¿½o de passar a vez
+		// Desenhar botão de passar a vez
 		JButton bPass = new JButton("Passar Vez");
 		PBanco p = this;
 		bPass.setBounds(frame.LARG_DEFAULT/2 - 150/2, 540, 150, 30);
@@ -98,11 +102,12 @@ public class PBanco extends JPanel implements MouseListener {
 				ctrl.passaVez();
 				displayCarta = -1;
 				p.repaint();
+				playerFrame.sendRepaint();
 			}
 		});
 		this.add(bPass);
 		
-		// Desenhar botï¿½o de salvar
+		// Desenhar botão de salvar
 		bSave = new JButton("Salvar");
 		bSave.setBounds(frame.LARG_DEFAULT/2 + 150/2 + 10, 540, 75, 30);
 		bSave.addActionListener(new ActionListener() {
