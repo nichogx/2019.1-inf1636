@@ -1,4 +1,4 @@
-package logica.componentes.jogador;
+package componentes.jogador;
 
 import java.awt.Color;
 import java.util.ArrayList;

@@ -16,10 +16,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import logica.componentes.Dado;
-import logica.componentes.jogador.Jogador;
-import logica.componentes.jogador.JogadorInfo;
-import logica.componentes.propriedades.*;
+import componentes.Dado;
+import componentes.jogador.Jogador;
+import componentes.jogador.JogadorInfo;
+import componentes.propriedades.*;
 
 public class CtrlRegras {
 	

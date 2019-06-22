@@ -1,4 +1,4 @@
-package logica.componentes;
+package componentes;
 
 import java.util.Random;
 
