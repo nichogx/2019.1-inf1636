@@ -13,7 +13,7 @@ public class FPlayerInfo extends JFrame {
 	final int LARG_DEFAULT=300;
 	final int ALT_DEFAULT=500;
 	
-	public FPlayerInfo(CtrlRegras c) {
+	public FPlayerInfo() {
 		Toolkit tk=Toolkit.getDefaultToolkit();
 		Dimension screenSize=tk.getScreenSize();
 		int sl=screenSize.width;
@@ -22,7 +22,7 @@ public class FPlayerInfo extends JFrame {
 		int y=sa/2-ALT_DEFAULT_PMAIN/2;
 		setBounds(x,y, LARG_DEFAULT, ALT_DEFAULT);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.getContentPane().add(new PPlayerInfo(c, this));
+		this.getContentPane().add(new PPlayerInfo(this));
 		setTitle("Informações do jogador");
 		this.setVisible(true);
 	}

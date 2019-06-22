@@ -82,7 +82,7 @@ public class PBanco extends JPanel implements MouseListener {
 
 		this.addMouseListener(this);
 		this.setLayout(null);
-		playerFrame = new FPlayerInfo(ctrl);
+		playerFrame = new FPlayerInfo();
 		
 		// Desenhar checkbox roubar
 		roubar = new JCheckBox("Escolher valor dos dados");

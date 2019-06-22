@@ -8,11 +8,10 @@ import logica.*;
 @SuppressWarnings("serial")
 public class PPlayerInfo extends JPanel implements MouseListener {
 	
-	private CtrlRegras ctrl;
 	private FPlayerInfo frame;
 	
-	public PPlayerInfo(CtrlRegras c, FPlayerInfo frame) {
-		ctrl = c;
+	public PPlayerInfo(FPlayerInfo frame) {
+
 		this.frame = frame;
 		
 		this.addMouseListener(this);
@@ -41,8 +40,8 @@ public class PPlayerInfo extends JPanel implements MouseListener {
 		
 		// escreve o nome do jogador
 		g2d.setFont(new Font("Arial", Font.BOLD, 20));
-		g2d.setColor(ctrl.getPlayerInfo().getCorObj());
-		g2d.drawString(ctrl.getPlayerInfo().getCor().toUpperCase(), frame.LARG_DEFAULT, 20);
+		g2d.setColor(CtrlRegras.getInstance().getPlayerInfo().getCorObj());
+		g2d.drawString(CtrlRegras.getInstance().getPlayerInfo().getCor().toUpperCase(), frame.LARG_DEFAULT, 20);
 		g2d.setColor(new Color(0));
 	}
 	
