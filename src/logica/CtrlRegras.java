@@ -492,7 +492,20 @@ public class CtrlRegras implements ObservadoIF {
 	
 	public int execVendaProp() {
 		
-		return 0;
+		JComboBox<String> cbVenda = new JComboBox<String>(getJogadorPropriedades());
+		Object[] cbVendaDisplay = {"Escolha uma propriedade para vender:", cbVenda};
+		int esc = JOptionPane.showOptionDialog(null, cbVendaDisplay, "Número de Jogadores",
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+		
+		if (esc == JOptionPane.OK_OPTION) {
+			int prop = players[vez].getPropriedades().get(cbVenda.getSelectedIndex());
+			propriedade[prop].setProprietario(-1);
+			players[vez].vendePropriedade(prop);
+			players[vez].modifyMoney(propriedade[prop].getPreco()/2);
+			bankMoney -= propriedade[prop].getPreco()/2;
+		}
+		
+		return players[vez].getMoney();
 	}
 	
 	public String[] getJogadorPropriedades() {

@@ -24,12 +24,16 @@ public class PPlayerInfo extends JPanel implements MouseListener {
 		bVenda.setBounds(frame.LARG_DEFAULT/2 - 180/2, frame.ALT_DEFAULT - 120, 180, 30);
 		bVenda.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// aqui vai entrar a função de venda
+				if(!CtrlRegras.getInstance().getPlayerInfo().getPropriedades().isEmpty())
+					CtrlRegras.getInstance().execVendaProp();
+				else
+					JOptionPane.showMessageDialog(null, "Você não tem propriedades para vender!");
+				p.repaint();
 			}
 		});
 		this.add(bVenda);
 		
-		cb.setBounds(20, 110, 200, 20);
+		cb.setBounds(20, 120, 200, 20);
 		this.add(cb);	
 	}
 	
@@ -57,10 +61,9 @@ public class PPlayerInfo extends JPanel implements MouseListener {
 		String[] propriedades = CtrlRegras.getInstance().getJogadorPropriedades();
 
 		cb.removeAllItems();
-		
+		cb.addItem("Clique para visualizar");
 		for(int i = 0; i < propriedades.length; i++) {
 			cb.addItem(propriedades[i]);
-			System.out.println(propriedades[i]);
 		}
 	}
 	
