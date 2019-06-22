@@ -13,8 +13,6 @@ public class PBanco extends JPanel implements MouseListener {
 
 	private FBanco frame = null;
 
-	private CtrlRegras ctrl = null;
-
 	private Image tabImg = null;
 	private Image[] dadosFaces = new Image[6];
 	private Image[] pinImgs;
@@ -29,8 +27,7 @@ public class PBanco extends JPanel implements MouseListener {
 	
 	private int displayCarta = -1; // a carta a mostrar
 
-	public PBanco(CtrlRegras c, FBanco frame) {
-		ctrl = c;
+	public PBanco(FBanco frame) {
 		this.frame = frame;
 
 		// Importando imagem do tabuleiro
@@ -72,7 +69,7 @@ public class PBanco extends JPanel implements MouseListener {
 		}
 
 		// Importando imagens dos pinos
-		int numPlayers = ctrl.getNumPlayers();
+		int numPlayers = CtrlRegras.getInstance().getNumPlayers();
 		pinImgs = new Image[numPlayers];
 		for (int i = 0; i < numPlayers; i++) {
 			try {
@@ -99,7 +96,7 @@ public class PBanco extends JPanel implements MouseListener {
 		bPass.setBounds(frame.LARG_DEFAULT/2 - 150/2, 540, 150, 30);
 		bPass.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ctrl.passaVez();
+				CtrlRegras.getInstance().passaVez();
 				displayCarta = -1;
 				p.repaint();
 				playerFrame.sendRepaint();
@@ -113,7 +110,7 @@ public class PBanco extends JPanel implements MouseListener {
 		bSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					ctrl.savegame();
+					CtrlRegras.getInstance().savegame();
 				} catch (IOException e1) {
 					JOptionPane.showMessageDialog(null, "Erro: estado do jogo não pôde ser escrito no arquivo.");
 				}
@@ -136,8 +133,8 @@ public class PBanco extends JPanel implements MouseListener {
 		g2d.drawImage(this.tabImg, 0, 0, null);
 
 		// desenhar dados
-		Image d1 = this.dadosFaces[ctrl.getFaceDado(0) - 1];
-		Image d2 = this.dadosFaces[ctrl.getFaceDado(1)- 1];
+		Image d1 = this.dadosFaces[CtrlRegras.getInstance().getFaceDado(0) - 1];
+		Image d2 = this.dadosFaces[CtrlRegras.getInstance().getFaceDado(1)- 1];
 		int size = (int) (d1.getWidth(null) * 0.25);
 		g2d.drawImage(
 				d1, (int) (frame.LARG_DEFAULT/2 - size * 1.2), frame.ALT_DEFAULT/2 + size,
@@ -152,7 +149,7 @@ public class PBanco extends JPanel implements MouseListener {
 		);
 		
 		// Habilitar/desabilitar salvamento
-		if (ctrl.cansave()) {
+		if (CtrlRegras.getInstance().cansave()) {
 			bSave.setEnabled(true);
 		} else {
 			bSave.setEnabled(false);
@@ -170,8 +167,8 @@ public class PBanco extends JPanel implements MouseListener {
 		g2d.setFont(new Font("Arial", Font.PLAIN, 18));
 		g2d.drawString("É a vez de: Jogador", 110, 130);
 		g2d.setFont(new Font("Arial", Font.BOLD, 20));
-		g2d.setColor(ctrl.getPlayerInfo().getCorObj());
-		g2d.drawString(ctrl.getPlayerInfo().getCor().toUpperCase(), 275, 130);
+		g2d.setColor(CtrlRegras.getInstance().getPlayerInfo().getCorObj());
+		g2d.drawString(CtrlRegras.getInstance().getPlayerInfo().getCor().toUpperCase(), 275, 130);
 		g2d.setColor(new Color(0));
 
 		// desenhar jogadores e escrever dinheiro
@@ -179,6 +176,7 @@ public class PBanco extends JPanel implements MouseListener {
 		int sizeY = (int) (pinImgs[0].getHeight(null) * 0.5);
 
 		g2d.setFont(new Font("Consolas", Font.PLAIN, 18));
+		CtrlRegras ctrl = CtrlRegras.getInstance();
 		for (int i = 0; i < ctrl.getNumPlayers(); i++) {
 			g2d.drawString(String.format("%-9s $%5d.00", ctrl.getPlayerInfo(i).getCor() + ":", ctrl.getPlayerInfo(i).getMoney()), 110, 150 + 20 * i);
 			g2d.drawImage(pinImgs[i],
@@ -207,14 +205,14 @@ public class PBanco extends JPanel implements MouseListener {
 			// rodar vez e mostrar a nova carta
 			int valDados = 0;
 			if (roubar.isSelected()) {
-				valDados = ctrl.rolarDadosRoubar();
+				valDados = CtrlRegras.getInstance().rolarDadosRoubar();
 			} else {
-				valDados = ctrl.rolarDados();
+				valDados = CtrlRegras.getInstance().rolarDados();
 			}
 
 			if (valDados != 0) {
 				this.repaint();
-				displayCarta = ctrl.executaVez(valDados);
+				displayCarta = CtrlRegras.getInstance().executaVez(valDados);
 				this.repaint();
 			}
 		}
