@@ -177,8 +177,11 @@ public class PBanco extends JPanel implements MouseListener {
 
 		g2d.setFont(new Font("Consolas", Font.PLAIN, 18));
 		CtrlRegras ctrl = CtrlRegras.getInstance();
+		// dinheiro do banco
+		g2d.drawString(String.format("Banco: $%5d.00", ctrl.getBankMoney()), 110, 150);
+		// dinheiro dos jogadores
 		for (int i = 0; i < ctrl.getNumPlayers(); i++) {
-			g2d.drawString(String.format("%-9s $%5d.00", ctrl.getPlayerInfo(i).getCor() + ":", ctrl.getPlayerInfo(i).getMoney()), 110, 150 + 20 * i);
+			g2d.drawString(String.format("%-9s $%5d.00", ctrl.getPlayerInfo(i).getCor() + ":", ctrl.getPlayerInfo(i).getMoney()), 110, 170 + 20 * i);
 			g2d.drawImage(pinImgs[i],
 					ctrl.getPlayerInfo(i).getPosX() + (sizeX + 5) * (i % 3),
 					ctrl.getPlayerInfo(i).getPosY() + (sizeY * (i / 3 % 2 + 1)),

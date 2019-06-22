@@ -325,9 +325,11 @@ public class CtrlRegras {
 		if (casa == casaGanha) {
 			JOptionPane.showMessageDialog(null,"Prêmio! Você ganhou $200 :D");
 			player.modifyMoney(200);
+			bankMoney -= 200;
 		} else if (casa == casaPerde) {
 			JOptionPane.showMessageDialog(null,"Impostos. Você perdeu $200 :(");
 			player.modifyMoney(-200);
+			bankMoney += 200;
 		} else if (casa == casaPrisao) {
 			JOptionPane.showMessageDialog(null,"Azar! Você foi preso! :(");
 			if (!player.irPrisao()) {
@@ -358,6 +360,10 @@ public class CtrlRegras {
 		return dados[index].getFace();
 	}
 	
+	public int getBankMoney() {
+		return bankMoney;
+	}
+	
 	/**
 	 * @return int a carta que foi rodada
 	 */
@@ -384,6 +390,7 @@ public class CtrlRegras {
 		} else {
 			// modifica dinheiro do jogador
 			players[vez].modifyMoney(sortes[atual]);
+			bankMoney -= sortes[atual];
 		}
 		
 		// coloca a carta no fim da lista
@@ -447,6 +454,7 @@ public class CtrlRegras {
 					JOptionPane.showMessageDialog(null, "Você não tem dinheiro suficiente para comprar a propriedade: "+propriedade[prop].getNome()+", pois ela custa $"+propriedade[prop].getPreco());
 				} else {
 					players[vez].modifyMoney(-propriedade[prop].getPreco());
+					bankMoney += propriedade[prop].getPreco();
 					propriedade[prop].setProprietario(vez);
 					players[vez].compraPropriedade(prop);
 					JOptionPane.showMessageDialog(null, "Você comprou a propriedade: "+propriedade[prop].getNome()+" por $"+propriedade[prop].getPreco());
