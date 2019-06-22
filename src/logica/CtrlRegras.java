@@ -192,11 +192,11 @@ public class CtrlRegras {
 	}
 	
 	public static CtrlRegras getInstance() {
-		if (instance != null) {
-			return instance;
-		} else {
-			return new CtrlRegras();
+		if (instance == null) {
+			instance = new CtrlRegras();
 		}
+		
+		return instance;
 	}
 
 	public int getNumPlayers() {
