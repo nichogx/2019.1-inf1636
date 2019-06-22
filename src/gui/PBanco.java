@@ -98,7 +98,6 @@ public class PBanco extends JPanel implements MouseListener,ObservadorIF {
 		bPass.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CtrlRegras.getInstance().passaVez();
-				displayCarta = -1;
 				p.repaint();
 				playerFrame.sendRepaint();
 			}
@@ -175,7 +174,6 @@ public class PBanco extends JPanel implements MouseListener,ObservadorIF {
 		} else if(displayCarta < -1) {
 			g2d.drawImage(imgPropriedades[-displayCarta-2], 350, 150, null);
 		}
-		displayCarta = -1;
 		
 		// Escrever vez de quem
 		g2d.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -239,7 +237,7 @@ public class PBanco extends JPanel implements MouseListener,ObservadorIF {
 	public void mouseReleased(MouseEvent e) {}
 
 	public void notify(ObservadoIF o) {
+		displayCarta = o.get(1);
 		this.repaint();
-		System.out.println("WORKS");
 	}
 }

@@ -30,6 +30,8 @@ public class CtrlRegras implements ObservadoIF {
 
 	public final int starterMoney = 2458;
 	public int bankMoney = 50000;
+	
+	private int cartaAtual = -1;
 
 	private int numPlayers = -1;
 	private Jogador[] players = null;
@@ -225,6 +227,9 @@ public class CtrlRegras implements ObservadoIF {
 		
 		podeRolarDado = true;
 		vezesDadosIguais = 0;
+		
+		cartaAtual = -1;
+		this.notificaAll();
 	}
 	
 	public int rolarDadosRoubar() {
@@ -380,22 +385,23 @@ public class CtrlRegras implements ObservadoIF {
 	 * @return int a carta que foi rodada
 	 */
 	private int execNextCarta() {
-		int atual = cartasSortes.remove(0);
+		cartaAtual = cartasSortes.remove(0);
+		this.notificaAll();
 		
 		// verifica especiais
-		if (atual == 8) { // sair da prisão
+		if (cartaAtual == 8) { // sair da prisão
 			players[vez].darCartaSair();
 			
 			// carta fica com o jogador, não vai pro fim da lista
-			return atual;
-		} else if (atual == 10) { // receber 50 de cada um
+			return cartaAtual;
+		} else if (cartaAtual == 10) { // receber 50 de cada um
 			for (int i = 0; i < numPlayers; i++) {
 				if (players[i].getMoney() > 0) {
 					players[i].modifyMoney(-50);
 					players[vez].modifyMoney(50);
 				}
 			}
-		} else if (atual == 22) { // ir para prisão
+		} else if (cartaAtual == 22) { // ir para prisão
 			boolean foiPreso = players[vez].irPrisao();
 			this.notificaAll();
 			if (!foiPreso) {
@@ -404,14 +410,14 @@ public class CtrlRegras implements ObservadoIF {
 			}
 		} else {
 			// modifica dinheiro do jogador
-			players[vez].modifyMoney(sortes[atual]);
-			bankMoney -= sortes[atual];
+			players[vez].modifyMoney(sortes[cartaAtual]);
+			bankMoney -= sortes[cartaAtual];
 		}
 		
 		// coloca a carta no fim da lista
-		cartasSortes.add(atual);
+		cartasSortes.add(cartaAtual);
 		
-		return atual;
+		return cartaAtual;
 	}
 	
 	/**
@@ -472,6 +478,7 @@ public class CtrlRegras implements ObservadoIF {
 					bankMoney += propriedade[prop].getPreco();
 					propriedade[prop].setProprietario(vez);
 					players[vez].compraPropriedade(prop);
+					cartaAtual = -prop-2;
 					notificaAll();
 					JOptionPane.showMessageDialog(null, "Você comprou a propriedade: "+propriedade[prop].getNome()+" por $"+propriedade[prop].getPreco());
 				}
@@ -555,6 +562,13 @@ public class CtrlRegras implements ObservadoIF {
 
 	public void remove(ObservadorIF o) {
 		observadores.remove(o);
+	}
+	
+	public int get(int var) {
+		if (var == 1) {
+			return cartaAtual;
+		}
+		return -1;
 	}
 
 	private void notificaAll() {
