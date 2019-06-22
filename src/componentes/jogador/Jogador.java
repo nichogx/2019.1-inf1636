@@ -3,8 +3,6 @@ package componentes.jogador;
 import java.awt.Color;
 import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
-
 public class Jogador implements JogadorInfo {
 
 	private Pino pin = new Pino();

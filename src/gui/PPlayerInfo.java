@@ -20,7 +20,6 @@ public class PPlayerInfo extends JPanel implements MouseListener {
 		this.setLayout(null);
 		
 		JButton bVenda = new JButton("Vender uma Propriedade");
-		PPlayerInfo p = this;
 		bVenda.setBounds(frame.LARG_DEFAULT/2 - 180/2, frame.ALT_DEFAULT - 120, 180, 30);
 		bVenda.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
