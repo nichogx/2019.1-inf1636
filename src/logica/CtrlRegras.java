@@ -491,10 +491,27 @@ public class CtrlRegras implements ObservadoIF {
 	}
 	
 	public int execVendaProp() {
+		
 		return 0;
 	}
 	
+	public String[] getJogadorPropriedades() {
+		ArrayList<Integer> propriedadesIndex = players[vez].getPropriedades();
+		String[] nomesProps = new String[propriedadesIndex.size()];
+		
+		for(int i = 0; i < propriedadesIndex.size(); i++) {
+			nomesProps[i] = propriedade[propriedadesIndex.get(i)].getNome();
+		}
+		
+		return nomesProps;
+	}
+	
+	/**
+	 * 
+	 * @return array de posições do jogador (primeiro é ganhador)
+	 */
 	public void endgame() {
+
 		// não dá pra usar sort em int[] com função, só em Integer[]
 		Integer[] sorted = new Integer[numPlayers];
 		for (int i = 0; i < numPlayers; i++) {

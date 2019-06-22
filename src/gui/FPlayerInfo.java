@@ -29,7 +29,6 @@ public class FPlayerInfo extends JFrame {
 	
 	public void sendRepaint() {
 		this.getContentPane().repaint();
-		System.out.println("teste");
 	}
 
 }

@@ -19,10 +19,10 @@ public class PPlayerInfo extends JPanel implements MouseListener {
 		
 		JButton bVenda = new JButton("Vender uma Propriedade");
 		PPlayerInfo p = this;
-		bVenda.setBounds(frame.LARG_DEFAULT/2 - 180/2, 20, 180, 30);
+		bVenda.setBounds(frame.LARG_DEFAULT/2 - 180/2, frame.ALT_DEFAULT - 120, 180, 30);
 		bVenda.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				// aqui vai entrar a função de venda
 			}
 		});
 		this.add(bVenda);
@@ -38,11 +38,30 @@ public class PPlayerInfo extends JPanel implements MouseListener {
 		        RenderingHints.KEY_TEXT_ANTIALIASING,
 		        RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		
-		// escreve o nome do jogador
+		// escreve a cor do jogador atual
 		g2d.setFont(new Font("Arial", Font.BOLD, 20));
 		g2d.setColor(CtrlRegras.getInstance().getPlayerInfo().getCorObj());
-		g2d.drawString(CtrlRegras.getInstance().getPlayerInfo().getCor().toUpperCase(), frame.LARG_DEFAULT, 20);
+		g2d.drawString("Jogador "+CtrlRegras.getInstance().getPlayerInfo().getCor().toUpperCase(), frame.LARG_DEFAULT/2-100, 50);
 		g2d.setColor(new Color(0));
+		
+		// escreve o quanto de dinheiro o jogador atual tem
+		g2d.setFont(new Font("Arial", Font.PLAIN, 18));
+		g2d.drawString("Dinheiro: $"+CtrlRegras.getInstance().getPlayerInfo().getMoney(), 20, 80);
+		
+		// mostra todas as propriedades de um jogador em uma combo box (sugestão do professor)
+		g2d.drawString("Propriedades:", 20, 110);
+		String[] propriedades = CtrlRegras.getInstance().getJogadorPropriedades();
+
+		JComboBox cb = new JComboBox(propriedades);
+		
+//		for(int i = 0; i < propriedades.length; i++) {
+//			cb.addItem(propriedades[i]);
+//			System.out.println(propriedades[i]);
+//		}
+		
+		cb.setBounds(20, 110, 200, 20);
+		this.add(cb);
+		
 	}
 	
 	public void mouseClicked(MouseEvent e) {}
