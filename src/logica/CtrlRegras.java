@@ -22,6 +22,8 @@ import logica.componentes.jogador.JogadorInfo;
 import logica.componentes.propriedades.*;
 
 public class CtrlRegras {
+	
+	private static CtrlRegras instance = null;
 
 	public final int starterMoney = 2458;
 	public int bankMoney = 50000;
@@ -48,7 +50,7 @@ public class CtrlRegras {
 			-25, -30, -45, -50, -50
 	};
 
-	public CtrlRegras() {
+	private CtrlRegras() {
 		
 		// Escolher nova partida ou load de jogo salvo
 		String[] optionsGame = {"Nova Partida", "Continuar"};
@@ -186,6 +188,14 @@ public class CtrlRegras {
 			// recriando dados (default)
 			dados[0] = new Dado();
 			dados[1] = new Dado();
+		}
+	}
+	
+	public static CtrlRegras getInstance() {
+		if (instance != null) {
+			return instance;
+		} else {
+			return new CtrlRegras();
 		}
 	}
 

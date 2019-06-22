@@ -26,8 +26,8 @@ public class PBanco extends JPanel implements MouseListener {
 	
 	private int displayCarta = -1; // a carta a mostrar
 
-	public PBanco(CtrlRegras c, FBanco frame) {
-		ctrl = c;
+	public PBanco(FBanco frame) {
+		ctrl = CtrlRegras.getInstance();
 		this.frame = frame;
 
 		// Importando imagem do tabuleiro
