@@ -10,6 +10,8 @@ public class PPlayerInfo extends JPanel implements MouseListener {
 	
 	private FPlayerInfo frame;
 	
+	JComboBox<String> cb = new JComboBox<String>();
+	
 	public PPlayerInfo(FPlayerInfo frame) {
 
 		this.frame = frame;
@@ -27,6 +29,8 @@ public class PPlayerInfo extends JPanel implements MouseListener {
 		});
 		this.add(bVenda);
 		
+		cb.setBounds(20, 110, 200, 20);
+		this.add(cb);	
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -52,16 +56,12 @@ public class PPlayerInfo extends JPanel implements MouseListener {
 		g2d.drawString("Propriedades:", 20, 110);
 		String[] propriedades = CtrlRegras.getInstance().getJogadorPropriedades();
 
-		JComboBox cb = new JComboBox(propriedades);
+		cb.removeAllItems();
 		
-//		for(int i = 0; i < propriedades.length; i++) {
-//			cb.addItem(propriedades[i]);
-//			System.out.println(propriedades[i]);
-//		}
-		
-		cb.setBounds(20, 110, 200, 20);
-		this.add(cb);
-		
+		for(int i = 0; i < propriedades.length; i++) {
+			cb.addItem(propriedades[i]);
+			System.out.println(propriedades[i]);
+		}
 	}
 	
 	public void mouseClicked(MouseEvent e) {}
