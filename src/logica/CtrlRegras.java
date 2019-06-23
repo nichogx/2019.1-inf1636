@@ -577,6 +577,56 @@ public class CtrlRegras implements ObservadoIF {
 		return players[vez].getMoney();
 	}
 	
+	public void execCompraCasa() {
+		
+		ArrayList<String> propriedadesJogNome = new ArrayList<String>();
+		ArrayList<Integer> propriedadesJog =  players[vez].getPropriedades();
+		String[] nomesProp = getJogadorPropriedades();
+		
+		for(int i = 0; i < nomesProp.length; i++) {
+			if (propriedade[propriedadesJog.get(i)] instanceof Terreno) {
+				propriedadesJogNome.add(nomesProp[i]);
+			} else {
+				propriedadesJog.remove(i);
+			}
+		}
+		
+		JComboBox<String> cbCompra = new JComboBox<String>((String[])propriedadesJogNome.toArray());
+		Object[] cbCompraDisplay = {"Escolha uma propriedade para comprar uma casa/hotel:", cbCompra};
+		int esc = JOptionPane.showOptionDialog(null, cbCompraDisplay, "Compra de Construções",
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+		
+		if (esc == JOptionPane.OK_OPTION) {
+			int prop = propriedadesJog.get(cbCompra.getSelectedIndex());
+			int i = prop < 5 ? 0 : prop - 5; // pior caso: propriedade de mesma cor 5 casas atrás
+			int min_construcoes = 0;
+			boolean ehProprietario = true; // é proprietário do grupo de terrenos?
+			ArrayList<Propriedade> subsetColor = new ArrayList<Propriedade>();
+			String cor = ((Terreno)propriedade[prop]).getCor();
+			
+			
+			while(i < propriedade.length) { // procura se o player é dono de todas as casas da cor do terreno e se há casas
+				if(propriedade[i] instanceof Terreno) {
+					if(i > prop && !cor.equals(((Terreno)propriedade[i]).getCor())) {
+						break;
+					} else if(cor.equals(((Terreno)propriedade[i]).getCor())){
+						if(propriedade[i].getProprietario() != vez) {
+							ehProprietario = false;
+							break;
+						}
+						subsetColor.add(propriedade[i]);
+					}
+				}
+				i++;
+			}
+			
+			if(ehProprietario) {
+				
+			}
+			
+		}
+	}
+	
 	public String[] getJogadorPropriedades() {
 		ArrayList<Integer> propriedadesIndex = players[vez].getPropriedades();
 		String[] nomesProps = new String[propriedadesIndex.size()];

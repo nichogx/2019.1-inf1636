@@ -32,6 +32,16 @@ public class Terreno extends Propriedade {
 		return valor;
 	}
 	
+	public int compraCasa() {
+		casa += 1;
+		return preco_construcoes;
+	}
+	
+	public int compraHotel() {
+		hotel += 1;
+		return preco_construcoes;
+	}
+	
 	public int getCasas() {
 		return casa;
 	}
