@@ -9,7 +9,7 @@ public class Jogador implements JogadorInfo {
 
 	private Pino pin = new Pino();
 	private int money = 0;
-	public ArrayList<Integer> propriedades = new ArrayList<Integer>();
+	private ArrayList<Integer> propriedades = new ArrayList<Integer>();
 	private String cor;
 	private Color corobj = new Color(0x000000);
 	
