@@ -233,10 +233,15 @@ public class CtrlRegras implements ObservadoIF {
 		vez = (vez + 1) % numPlayers;
 		while (players[vez].getMoney() <= 0) { // está falido, passa pro próximo
 			if (vezInicial == vez) { // fez loop e o atual está falido
-				// TODO fim de jogo, todos faliram
-				// não deve acontecer, pois se todos falirem menos um este ganhou
+				JOptionPane.showMessageDialog(null,"Fim de jogo! Todos faliram.");
+				endgame();
 			}
 			vez = (vez + 1) % numPlayers; // passa pro outro
+		}
+		if (vezInicial == vez) {
+			// próximo não falido era ele mesmo
+			JOptionPane.showMessageDialog(null,"Fim de jogo! Todos os outros jogadores faliram.");
+			endgame();
 		}
 		
 		podeRolarDado = true;
