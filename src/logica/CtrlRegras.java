@@ -190,6 +190,20 @@ public class CtrlRegras implements ObservadoIF {
 				System.exit(0);
 			}
 			
+			// recriando casas e hoteis
+			for (int i = 0; i < propriedade.length; i++) {
+				// empresas
+				Pattern pattern = Pattern.compile("(\t)(((empresa) " + i + ";)|((terreno) " + i + ": casa (\\d+), hotel (\\d+);))");
+				Matcher matcher = pattern.matcher(fStr);
+				matcher.find();
+				if (matcher.group(6) != null && matcher.group(6).contentEquals("terreno") && propriedade[i] instanceof Terreno) {
+					Terreno t = (Terreno) propriedade[i];
+					int casa = Integer.parseInt(matcher.group(7));
+					int hotel = Integer.parseInt(matcher.group(8));
+					t.loadCasaHotel(casa, hotel);
+				}
+			}
+			
 			// recriando dados (default)
 			dados[0] = new Dado();
 			dados[1] = new Dado();
@@ -605,10 +619,10 @@ public class CtrlRegras implements ObservadoIF {
 			}
 		}
 		
-		System.out.print(propriedadesJog.size()); // TODO verificar
-		for(String i : propriedadesJogNome) {
-			System.out.println(i);
-		}
+//		System.out.print(propriedadesJog.size()); // TODO verificar
+//		for(String i : propriedadesJogNome) {
+//			System.out.println(i);
+//		}
 		
 		String[] nomesProp2 = propriedadesJogNome.toArray(new String[propriedadesJogNome.size()]);
 		
@@ -748,6 +762,18 @@ public class CtrlRegras implements ObservadoIF {
 		}
 		writer.append("vez: " + vez + ";\n");
 		writer.append("cartasSortes: " + cartasSortes.toString() + ";\n");
+		writer.append("propriedades: " + propriedade.length + ";\n");
+		for (int i = 0; i < propriedade.length; i++) {
+			Propriedade p = propriedade[i];
+			if (p instanceof Terreno) {
+				writer.append("\tterreno " + i + ": ");
+				Terreno t = (Terreno) p;
+				writer.append(t.genSaveString());
+				writer.append(";\n");
+			} else {
+				writer.append("\tempresa " + i + ";\n");
+			}
+		}
 		
 		writer.close();
 		

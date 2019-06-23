@@ -49,4 +49,13 @@ public class Terreno extends Propriedade {
 	public int getHotel() {
 		return hotel;
 	}
+	
+	public String genSaveString() {
+		return String.format("casa %d, hotel %d", casa, hotel);
+	}
+	
+	public void loadCasaHotel(int casa, int hotel) {
+		this.casa = casa;
+		this.hotel = hotel;
+	}
 }
