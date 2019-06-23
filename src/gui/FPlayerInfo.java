@@ -24,9 +24,5 @@ public class FPlayerInfo extends JFrame {
 		setTitle("Informações do jogador");
 		this.setVisible(true);
 	}
-	
-	public void sendRepaint() {
-		this.getContentPane().repaint();
-	}
 
 }

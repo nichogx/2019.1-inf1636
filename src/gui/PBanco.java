@@ -97,7 +97,6 @@ public class PBanco extends JPanel implements MouseListener, ObservadorIF {
 		bPass.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CtrlRegras.getInstance().passaVez();
-				playerFrame.sendRepaint();
 			}
 		});
 		this.add(bPass);

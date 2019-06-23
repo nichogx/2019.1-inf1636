@@ -110,7 +110,12 @@ public class Jogador implements JogadorInfo {
 	}
 	
 	public ArrayList<Integer> getPropriedades() {
-		return propriedades;
+		
+		ArrayList<Integer> properties = new ArrayList<Integer>();
+		for(int i = 0; i < propriedades.size(); i++) {
+			properties.add(propriedades.get(i));
+		}
+		return properties;
 	}
 	
 	public void compraPropriedade(int property) {

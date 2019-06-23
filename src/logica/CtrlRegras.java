@@ -594,84 +594,85 @@ public class CtrlRegras implements ObservadoIF {
 	public void execCompraCasa() {
 		
 		ArrayList<String> propriedadesJogNome = new ArrayList<String>(); // array com nomes dos terrenos do jogador
-		ArrayList<Integer> propriedadesJog =  players[vez].getPropriedades(); // array com posições dos terrenos do jogador
+		ArrayList<Integer> propriedadesJog = players[vez].getPropriedades(); // array com posições dos terrenos do jogador
 		String[] nomesProp = getJogadorPropriedades(); // array com nomes de todas as propriedades do jogador
 		
-		for(int i = 0; i < nomesProp.length; i++) { // irá tirar do array as propriedades que são Empresa
-			if (propriedade[propriedadesJog.get(i)] instanceof Terreno) {
+		for(int i = 0, j = 0; i < nomesProp.length; i++) { // irá tirar do array as propriedades que são Empresa
+			if (propriedade[propriedadesJog.get(j)] instanceof Terreno) {
 				propriedadesJogNome.add(nomesProp[i]);
 			} else {
-				propriedadesJog.remove(i);
+				propriedadesJog.remove(j);
+				j--;
 			}
+			j++;
 		}
 		
-		System.out.print(propriedadesJog.size()); // TODO verificar
-		for(String i : propriedadesJogNome) {
-			System.out.println(i);
-		}
+		if(propriedadesJogNome.size() == 0) {
+			JOptionPane.showMessageDialog(null, "Você tem apenas empresas. Não é possível comprar casas/hoteis nesse tipo de propriedade.");
+		} else {
 		
-		String[] nomesProp2 = propriedadesJogNome.toArray(new String[propriedadesJogNome.size()]);
-		
-		
-		JComboBox<String> cbCompra = new JComboBox<String>(nomesProp2);
-		Object[] cbCompraDisplay = {"Escolha uma propriedade para comprar uma casa/hotel:", cbCompra};
-		int esc = JOptionPane.showOptionDialog(null, cbCompraDisplay, "Compra de Construções",
-				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-		
-		if (esc == JOptionPane.OK_OPTION) {
-			int prop = propriedadesJog.get(cbCompra.getSelectedIndex()); // índice da propriedade escolhida
-			int i = prop < 5 ? 0 : prop - 5; // pior caso: propriedade de mesma cor 5 casas atrás
-			int min_construcoes = 0;
-			ArrayList<Propriedade> subsetColor = new ArrayList<Propriedade>();
-			String cor = ((Terreno)propriedade[prop]).getCor();
+			String[] nomesProp2 = propriedadesJogNome.toArray(new String[propriedadesJogNome.size()]);
 			
+			JComboBox<String> cbCompra = new JComboBox<String>(nomesProp2);
+			Object[] cbCompraDisplay = {"Escolha uma propriedade para comprar uma casa/hotel:", cbCompra};
+			int esc = JOptionPane.showOptionDialog(null, cbCompraDisplay, "Compra de Construções",
+					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 			
-			while(i < propriedade.length) { // procura se o player é dono de todas as casas da cor do terreno e se há casas
-				if(propriedade[i] instanceof Terreno) {
-					if(i > prop && !cor.equals(((Terreno)propriedade[i]).getCor())) {
-						break;
-					} else if(cor.equals(((Terreno)propriedade[i]).getCor())){
-						if(propriedade[i].getProprietario() != vez) {
-							JOptionPane.showMessageDialog(null, "Não é possível fazer a compra de casas para esse terreno, "
-									+ "pois você não é dono de todos os terrenos dessa cor.");
-							return;
+			if (esc == JOptionPane.OK_OPTION) {
+				int prop = propriedadesJog.get(cbCompra.getSelectedIndex()); // índice da propriedade escolhida
+				int i = prop < 5 ? 0 : prop - 5; // pior caso: propriedade de mesma cor 5 casas atrás
+				int min_construcoes = 0;
+				ArrayList<Propriedade> subsetColor = new ArrayList<Propriedade>();
+				String cor = ((Terreno)propriedade[prop]).getCor();
+				
+				
+				while(i < propriedade.length) { // procura se o player é dono de todas as casas da cor do terreno e se há casas
+					if(propriedade[i] instanceof Terreno) {
+						if(i > prop && !cor.equals(((Terreno)propriedade[i]).getCor())) {
+							break;
+						} else if(cor.equals(((Terreno)propriedade[i]).getCor())){
+							if(propriedade[i].getProprietario() != vez) {
+								JOptionPane.showMessageDialog(null, "Não é possível fazer a compra de casas para esse terreno, "
+										+ "pois você não é dono de todos os terrenos dessa cor.");
+								return;
+							}
+							subsetColor.add(propriedade[i]);
 						}
-						subsetColor.add(propriedade[i]);
 					}
-				}
-				i++;
-			}
-			
-			int num_construcoes; // numero de construções no terreno no qual deseja-se comprar casas
-			for(Propriedade unit : subsetColor) {
-				num_construcoes = ((Terreno)unit).getCasas() + ((Terreno)unit).getHotel(); // uso auxiliar de num_construcoes
-				min_construcoes = min_construcoes > num_construcoes ? num_construcoes : min_construcoes;
-			}
-			
-			num_construcoes = ((Terreno) propriedade[prop]).getCasas()+((Terreno) propriedade[prop]).getHotel();
-			
-			if(num_construcoes == 5) {
-				JOptionPane.showMessageDialog(null, "Esse terreno já tem o número máximo de casas e hoteis.");
-			} else if(num_construcoes == min_construcoes) {
-				int preco;
-				String tipo;
-				if(num_construcoes == 4) {
-					preco = ((Terreno)propriedade[prop]).compraHotel();
-					tipo = " hotel";
-				} else {
-					preco = ((Terreno)propriedade[prop]).compraCasa();
-					tipo = "a casa";
+					i++;
 				}
 				
-				players[vez].modifyMoney(-preco);
-				bankMoney += preco;
-				this.notificaAll();
-				JOptionPane.showMessageDialog(null, "Você comprou um"+tipo+" no terreno "+cbCompra.getSelectedItem()+" por $"+preco);
-			} else {
-				JOptionPane.showMessageDialog(null, "Você deve ter um número igual de casas ou hoteis nos outros terrenos dessa cor"
-						+ " antes de poder comprar mais casas ou hoteis.");
+				int num_construcoes; // numero de construções no terreno no qual deseja-se comprar casas
+				for(Propriedade unit : subsetColor) {
+					num_construcoes = ((Terreno)unit).getCasas() + ((Terreno)unit).getHotel(); // uso auxiliar de num_construcoes
+					min_construcoes = min_construcoes > num_construcoes ? num_construcoes : min_construcoes;
+				}
+				
+				num_construcoes = ((Terreno) propriedade[prop]).getCasas()+((Terreno) propriedade[prop]).getHotel();
+				
+				if(num_construcoes == 5) {
+					JOptionPane.showMessageDialog(null, "Esse terreno já tem o número máximo de casas e hoteis.");
+				} else if(num_construcoes == min_construcoes) {
+					int preco;
+					String tipo;
+					if(num_construcoes == 4) {
+						preco = ((Terreno)propriedade[prop]).compraHotel();
+						tipo = " hotel";
+					} else {
+						preco = ((Terreno)propriedade[prop]).compraCasa();
+						tipo = "a casa";
+					}
+					
+					players[vez].modifyMoney(-preco);
+					bankMoney += preco;
+					this.notificaAll();
+					JOptionPane.showMessageDialog(null, "Você comprou um"+tipo+" no terreno "+cbCompra.getSelectedItem()+" por $"+preco);
+				} else {
+					JOptionPane.showMessageDialog(null, "Você deve ter um número igual de casas ou hoteis nos outros terrenos dessa cor"
+							+ " antes de poder comprar mais casas ou hoteis.");
+				}
+				
 			}
-			
 		}
 		
 	}
