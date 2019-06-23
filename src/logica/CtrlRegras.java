@@ -478,7 +478,7 @@ public class CtrlRegras implements ObservadoIF {
 					int resultado = players[vez].modifyMoney(-aluguel);
 					while(resultado < 0 && !playerFaliu) {
 						int resultadoAnt = resultado;
-						JOptionPane.showMessageDialog(null, "Você não tem dinheiro o suficiente para pagar o aluguel ($"+aluguel+") da propriedade "+propriedade[prop].getNome()+" do jogador "+players[propriedade[prop].getProprietario()].getCor()+". Venda uma de suas propriedades para compensar a falta de dinheiro ($"+(-resultado)+").");
+						JOptionPane.showMessageDialog(null, "Você não tem dinheiro o suficiente para pagar o aluguel ($"+aluguel+") da propriedade "+propriedade[prop].getNome()+" do jogador "+players[propriedade[prop].getProprietario()].getCor()+". Caso tenha, venda uma de suas propriedades para compensar a falta de dinheiro ($"+(-resultado)+").");
 						resultado = execVendaProp();
 						
 						if (resultado == resultadoAnt) {
@@ -524,86 +524,88 @@ public class CtrlRegras implements ObservadoIF {
 	
 	public int execVendaProp() {
 		
-		JComboBox<String> cbVenda = new JComboBox<String>(getJogadorPropriedades());
-		Object[] cbVendaDisplay = {"Escolha uma propriedade para vender:", cbVenda};
-		int esc = JOptionPane.showOptionDialog(null, cbVendaDisplay, "Venda de Propriedades",
-				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null); // escolhe um propriedade para vender
-		
-		if (esc == JOptionPane.OK_OPTION) {
-			int prop = players[vez].getPropriedades().get(cbVenda.getSelectedIndex());
-			if(propriedade[prop] instanceof Empresa) { // empresas não tem verificação de construção
-				propriedade[prop].setProprietario(-1);
-				
-				players[vez].vendePropriedade(prop);
-				int preco = (propriedade[prop].getPreco()*9)/10;
-				players[vez].modifyMoney(preco);
-				bankMoney -= preco;
-				this.notificaAll();
-				JOptionPane.showMessageDialog(null, "Você vendeu a empresa "+cbVenda.getSelectedItem()+" por $"+preco);
-				
-			} else {
-				int i = prop < 5 ? 0 : prop - 5; // pior caso: propriedade de mesma cor 5 casas do tabuleiro atrás
-				int preco_construcoes = 0;
-				boolean ehProprietario = true; // é proprietário do grupo de terrenos?
-				ArrayList<Propriedade> subsetColor = new ArrayList<Propriedade>();
-				String cor = ((Terreno)propriedade[prop]).getCor();
-				
-				while(i < propriedade.length) { // procura se o player é dono de todas as casas da cor do terreno
-					if(propriedade[i] instanceof Terreno) {
-						if(i > prop && !cor.equals(((Terreno)propriedade[i]).getCor())) {
-							break;
-						} else if(cor.equals(((Terreno)propriedade[i]).getCor())){
-							if(propriedade[i].getProprietario() != vez) {
-								ehProprietario = false;
-								break;
-							}
-							subsetColor.add(propriedade[i]);
-						}
-					}
-					i++;
-				}
-				
-				if(ehProprietario) { // ele é proprietário da cor
-				
-					for(Propriedade unit : subsetColor) {
-						preco_construcoes += ((Terreno)unit).getPrecoVendaConstrucoes();
-					}
-					
-					String construcao = "";
-					if(preco_construcoes > 0) { // significa que tem construções
-						int opt = JOptionPane.showOptionDialog(null, "Ao confirmar, estará vendendo tanto a propriedade escolhida como também\n"
-								+ "todas as casas do grupo de terrenos de cor "+cor+".\nDeseja prosseguir?", "Valor dos Dados",
-								JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null); // último aviso ao jogador
-						if(opt != JOptionPane.OK_OPTION) {
-							return players[vez].getMoney();
-						} else {
-							for(Propriedade unit : subsetColor) {
-								((Terreno)unit).vendeConstrucoes();
-							}
-							preco_construcoes = (preco_construcoes*9)/10;
-							players[vez].modifyMoney(preco_construcoes);
-							bankMoney -= preco_construcoes;
-							construcao = "E você vendeu todas as casas do grupo de terrenos de cor "+cor+" por $"+preco_construcoes+".";
-						}
-					}
-					
+		if(players[vez].getPropriedades().size() != 0) {
+			JComboBox<String> cbVenda = new JComboBox<String>(getJogadorPropriedades());
+			Object[] cbVendaDisplay = {"Escolha uma propriedade para vender:", cbVenda};
+			int esc = JOptionPane.showOptionDialog(null, cbVendaDisplay, "Venda de Propriedades",
+					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null); // escolhe um propriedade para vender
+			
+			if (esc == JOptionPane.OK_OPTION) {
+				int prop = players[vez].getPropriedades().get(cbVenda.getSelectedIndex());
+				if(propriedade[prop] instanceof Empresa) { // empresas não tem verificação de construção
 					propriedade[prop].setProprietario(-1);
+					
 					players[vez].vendePropriedade(prop);
 					int preco = (propriedade[prop].getPreco()*9)/10;
 					players[vez].modifyMoney(preco);
 					bankMoney -= preco;
-					JOptionPane.showMessageDialog(null, "Você vendeu o terreno "+cbVenda.getSelectedItem()+" por $"+preco+".\n"+construcao);
 					this.notificaAll();
+					JOptionPane.showMessageDialog(null, "Você vendeu a empresa "+cbVenda.getSelectedItem()+" por $"+preco);
 					
 				} else {
+					int i = prop < 5 ? 0 : prop - 5; // pior caso: propriedade de mesma cor 5 casas do tabuleiro atrás
+					int preco_construcoes = 0;
+					boolean ehProprietario = true; // é proprietário do grupo de terrenos?
+					ArrayList<Propriedade> subsetColor = new ArrayList<Propriedade>();
+					String cor = ((Terreno)propriedade[prop]).getCor();
 					
-					propriedade[prop].setProprietario(-1);
-					players[vez].vendePropriedade(prop);
-					int preco = (propriedade[prop].getPreco()*9)/10;
-					players[vez].modifyMoney(preco);
-					bankMoney -= preco;
-					JOptionPane.showMessageDialog(null, "Você vendeu o terreno "+cbVenda.getSelectedItem()+" por $"+preco+".");
-					this.notificaAll();
+					while(i < propriedade.length) { // procura se o player é dono de todas as casas da cor do terreno
+						if(propriedade[i] instanceof Terreno) {
+							if(i > prop && !cor.equals(((Terreno)propriedade[i]).getCor())) {
+								break;
+							} else if(cor.equals(((Terreno)propriedade[i]).getCor())){
+								if(propriedade[i].getProprietario() != vez) {
+									ehProprietario = false;
+									break;
+								}
+								subsetColor.add(propriedade[i]);
+							}
+						}
+						i++;
+					}
+					
+					if(ehProprietario) { // ele é proprietário da cor
+					
+						for(Propriedade unit : subsetColor) {
+							preco_construcoes += ((Terreno)unit).getPrecoVendaConstrucoes();
+						}
+						
+						String construcao = "";
+						if(preco_construcoes > 0) { // significa que tem construções
+							int opt = JOptionPane.showOptionDialog(null, "Ao confirmar, estará vendendo tanto a propriedade escolhida como também\n"
+									+ "todas as casas do grupo de terrenos de cor "+cor+".\nDeseja prosseguir?", "Valor dos Dados",
+									JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null); // último aviso ao jogador
+							if(opt != JOptionPane.OK_OPTION) {
+								return players[vez].getMoney();
+							} else {
+								for(Propriedade unit : subsetColor) {
+									((Terreno)unit).vendeConstrucoes();
+								}
+								preco_construcoes = (preco_construcoes*9)/10;
+								players[vez].modifyMoney(preco_construcoes);
+								bankMoney -= preco_construcoes;
+								construcao = "E você vendeu todas as casas do grupo de terrenos de cor "+cor+" por $"+preco_construcoes+".";
+							}
+						}
+						
+						propriedade[prop].setProprietario(-1);
+						players[vez].vendePropriedade(prop);
+						int preco = (propriedade[prop].getPreco()*9)/10;
+						players[vez].modifyMoney(preco);
+						bankMoney -= preco;
+						JOptionPane.showMessageDialog(null, "Você vendeu o terreno "+cbVenda.getSelectedItem()+" por $"+preco+".\n"+construcao);
+						this.notificaAll();
+						
+					} else {
+						
+						propriedade[prop].setProprietario(-1);
+						players[vez].vendePropriedade(prop);
+						int preco = (propriedade[prop].getPreco()*9)/10;
+						players[vez].modifyMoney(preco);
+						bankMoney -= preco;
+						JOptionPane.showMessageDialog(null, "Você vendeu o terreno "+cbVenda.getSelectedItem()+" por $"+preco+".");
+						this.notificaAll();
+					}
 				}
 			}
 		}
@@ -641,7 +643,7 @@ public class CtrlRegras implements ObservadoIF {
 			if (esc == JOptionPane.OK_OPTION) {
 				int prop = propriedadesJog.get(cbCompra.getSelectedIndex()); // índice da propriedade escolhida
 				int i = prop < 5 ? 0 : prop - 5; // pior caso: propriedade de mesma cor 5 casas atrás
-				int min_construcoes = 0;
+				int min_construcoes = 5;
 				ArrayList<Propriedade> subsetColor = new ArrayList<Propriedade>();
 				String cor = ((Terreno)propriedade[prop]).getCor();
 				
