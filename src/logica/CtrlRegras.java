@@ -696,6 +696,20 @@ public class CtrlRegras implements ObservadoIF {
 		
 	}
 	
+	public void execVenderTodasPropriedades(int numJog) {
+		
+		ArrayList<Integer> properties = players[numJog].getPropriedades(); // todas as propriedades do jogador
+		int preco = 0;
+		while(properties.size() != 0) {
+			int index = properties.remove(0); // pega o índice da propriedade
+			propriedade[index].setProprietario(-1); // muda o proprietário para o banco
+			players[numJog].vendePropriedade(index); // retira do proprietário a propriedade
+			if(propriedade[index] instanceof Terreno)
+				preco += (((Terreno)propriedade[index]).vendeConstrucoes()*9)/10; // vende construções se for terreno
+			preco += (propriedade[index].getPreco()*9)/10; // vende propriedade
+		}
+	}
+	
 	public String[] getJogadorPropriedades() {
 		ArrayList<Integer> propriedadesIndex = players[vez].getPropriedades();
 		String[] nomesProps = new String[propriedadesIndex.size()];
