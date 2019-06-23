@@ -726,22 +726,20 @@ public class CtrlRegras implements ObservadoIF {
 		return nomesProps;
 	}
 	
-	/**
-	 * 
-	 * @return array de posições do jogador (primeiro é ganhador)
-	 */
 	public void endgame() {
 
 		// não dá pra usar sort em int[] com função, só em Integer[]
 		Integer[] sorted = new Integer[numPlayers];
 		for (int i = 0; i < numPlayers; i++) {
 			sorted[i] = i;
+			
+			// só se jogador não estiver falido
+			if (players[i].getMoney() >= 0) {
+				execVenderTodasPropriedades(i);
+			}
 		}
 
 		Arrays.sort(sorted, (a, b) -> {
-			// TODO aqui só compara o dinheiro. Comparar propriedades também
-			// ("vender" tudo para contar??)
-			// (acho que sim, parece uma boa e se nao me engano o Ivan falou isso)
 			return players[b].getMoney() - players[a].getMoney();
 		});
 		
