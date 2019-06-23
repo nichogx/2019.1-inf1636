@@ -28,8 +28,8 @@ public class CtrlRegras implements ObservadoIF {
 	private static CtrlRegras instance = null;
 	private ArrayList<ObservadorIF> observadores = new ArrayList<ObservadorIF>();
 
-	public final int starterMoney = 2458;
-	public int bankMoney = 50000;
+	private final int starterMoney = 2458;
+	private int bankMoney = 50000;
 	
 	private int cartaAtual = -1;
 
@@ -45,8 +45,8 @@ public class CtrlRegras implements ObservadoIF {
 	private boolean jaIniciou = false; // savegame
 	private int vezesDadosIguais = 0;
 	
-	public ArrayList<Integer> cartasSortes = new ArrayList<Integer>();
-	public int[] sortes = { // especiais: 9 [8], 11 [10], 23 [22]
+	private ArrayList<Integer> cartasSortes = new ArrayList<Integer>();
+	private int[] sortes = { // especiais: 9 [8], 11 [10], 23 [22]
 			25, 150, 80, 200, 50,
 			50, 100, 100, 0, 200,
 			0, 45, 100, 100, 20,
@@ -699,7 +699,7 @@ public class CtrlRegras implements ObservadoIF {
 		
 	}
 	
-	public void execVenderTodasPropriedades(int numJog) {
+	private void execVenderTodasPropriedades(int numJog) {
 		
 		ArrayList<Integer> properties = players[numJog].getPropriedades(); // todas as propriedades do jogador
 		int total = 0;
