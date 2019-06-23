@@ -54,6 +54,17 @@ public class CtrlRegras implements ObservadoIF {
 			-100, -40, 0, -30, -50,
 			-25, -30, -45, -50, -50
 	};
+	
+	Integer[] casasPropriedade = {
+			1, 3, 4, 5,
+			6, 7, 8, 9,
+			11, 13, 14, 15,
+			17, 19,
+			21, 23, 25,
+			26, 28, 29,
+			31, 32, 33, 34, 35, 36,
+			38, 39
+	};
 
 	private CtrlRegras() {
 		
@@ -338,19 +349,6 @@ public class CtrlRegras implements ObservadoIF {
 		
 		Integer[] casasSorte = {2, 12, 16, 22, 27, 37};
 		
-		// Integer[] casasEmpresa = {5, 7, 15, 25, 32, 35}; // O resto são terrenos
-		
-		Integer[] casasPropriedade = {
-				1, 3, 4, 5,
-				6, 7, 8, 9,
-				11, 13, 14, 15,
-				17, 19,
-				21, 23, 25,
-				26, 28, 29,
-				31, 32, 33, 34, 35, 36,
-				38, 39
-		};
-		
 		int casaGanha = 18;
 		int casaPerde = 24;
 		int casaPrisao = 30;
@@ -391,6 +389,26 @@ public class CtrlRegras implements ObservadoIF {
 
 	public JogadorInfo getPlayerInfo(int index) {
 		return players[index];
+	}
+	
+	public String[] getPropriedadeInfo(int index) {
+		String[] propriedadeInfo = null;
+		if(propriedade[casasPropriedade[index]] instanceof Empresa) {
+			propriedadeInfo = new String[1];
+		} else {
+			propriedadeInfo = new String[3];
+			propriedadeInfo[1] = ""+((Terreno) propriedade[casasPropriedade[index]]).getCasas();
+			propriedadeInfo[2] = ""+((Terreno) propriedade[casasPropriedade[index]]).getHotel();
+		}
+		
+		int numProprietario = propriedade[casasPropriedade[index]].getProprietario();
+		if(numProprietario < 0)
+			propriedadeInfo[0] = "Banco";
+		else
+			propriedadeInfo[0] = "Jogador "+players[numProprietario].getCor();
+		
+		return propriedadeInfo;
+		
 	}
 
 	public int getFaceDado(int index) {
@@ -443,7 +461,7 @@ public class CtrlRegras implements ObservadoIF {
 	/**
 	 * @return int o oposto do índice menos 2 da propriedade em que o jogador está
 	 */
-	private int execPropriedade(int prop) { //TODO executa as funções de compra e aluguel de propriedade 
+	private int execPropriedade(int prop) {
 		
 		if(propriedade[prop].getProprietario() != -1) {
 			if(vez != propriedade[prop].getProprietario()) {

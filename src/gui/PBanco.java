@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.awt.event.*;
 import logica.*;
 import observer.*;
+import sun.security.jca.GetInstance;
 
 @SuppressWarnings("serial")
 public class PBanco extends JPanel implements MouseListener, ObservadorIF {
@@ -170,6 +171,15 @@ public class PBanco extends JPanel implements MouseListener, ObservadorIF {
 			g2d.drawImage(imgSortes[displayCarta], 380, 150, null);
 		} else if(displayCarta < -1) {
 			g2d.drawImage(imgPropriedades[-displayCarta-2], 350, 150, null);
+			String[] info = CtrlRegras.getInstance().getPropriedadeInfo(-displayCarta-2);
+			g2d.setFont(new Font("Consolas", Font.PLAIN, 18));
+			g2d.drawString("Proprietário da", 115, 340);
+			g2d.drawString("Propriedade Atual:", 115, 360);
+			g2d.drawString(""+info[0], 115, 380);
+			if(info.length > 1) {
+				g2d.drawString("Casas: "+ info[1], 115, 400);
+				g2d.drawString("Hotel: "+ info[2], 115, 420);
+			}
 		}
 		
 		// Escrever vez de quem
@@ -227,7 +237,7 @@ public class PBanco extends JPanel implements MouseListener, ObservadorIF {
 			}
 		}
 
-		//System.out.printf("x = %d, y = %d\n", x,y); //Para encontrar a posicao em um determinado ponto
+		System.out.printf("x = %d, y = %d\n", x,y); //Para encontrar a posicao em um determinado ponto TODO
 	}
 
 	public void mouseReleased(MouseEvent e) {}
