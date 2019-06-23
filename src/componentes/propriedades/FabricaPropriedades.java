@@ -3,15 +3,15 @@ package componentes.propriedades;
 public class FabricaPropriedades {
 	public static Propriedade[] cria() {
 		
-		int[] preco_compra = { // cada linha simboliza uma cor (empresas entram no meio e fim de cada cor)
-				100, 60, 60, 200,
-				240, 200, 220, 220,
-				220, 310, 310, 150,
-				350, 400,
-				120, 100, 150,
-				160, 140, 140,
-				260, 200, 320, 300, 200, 300,
-				280, 260
+		int[][] preco_compra = { // cada linha simboliza uma cor (empresas entram no meio e fim de cada cor)
+				{100, 50} , {60, 50}  , {60, 50}  , {200},
+				{240, 150}, {200}     , {220, 150}, {220, 150},
+				{220, 100}, {310, 100}, {310, 100}, {150},
+				{350, 200}, {400, 200},
+				{120, 50} , {100, 50} , {150},
+				{160, 100}, {140, 100}, {140, 100},
+				{260, 150}, {200}     , {320, 200}, {300, 200}, {200}, {300, 200},
+				{280, 150}, {260, 150}
 		};
 		
 		int[][] aluguel = { // cada linha simboliza uma cor (empresas tem apenas 1 preco)
@@ -40,7 +40,7 @@ public class FabricaPropriedades {
 		
 		for(int i = 0; i < 28; i++) {
 			if (i == 3 || i == 5 || i == 11 || i == 16 || i == 21 || i == 24)
-				prop[i] = new Empresa(preco_compra[i], aluguel[i], nomes[i]);
+				prop[i] = new Empresa(preco_compra[i][0], aluguel[i], nomes[i]);
 			else {
 				if(i < 3)
 					prop[i] = new Terreno(preco_compra[i], aluguel[i], nomes[i], "Rosa");
