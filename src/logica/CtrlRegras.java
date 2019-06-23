@@ -725,10 +725,6 @@ public class CtrlRegras implements ObservadoIF {
 		return nomesProps;
 	}
 	
-	/**
-	 * 
-	 * @return array de posições do jogador (primeiro é ganhador)
-	 */
 	public void endgame() {
 
 		// não dá pra usar sort em int[] com função, só em Integer[]
@@ -736,7 +732,10 @@ public class CtrlRegras implements ObservadoIF {
 		for (int i = 0; i < numPlayers; i++) {
 			sorted[i] = i;
 			
-			execVenderTodasPropriedades(i);
+			// só se jogador não estiver falido
+			if (players[i].getMoney() >= 0) {
+				execVenderTodasPropriedades(i);
+			}
 		}
 
 		Arrays.sort(sorted, (a, b) -> {
