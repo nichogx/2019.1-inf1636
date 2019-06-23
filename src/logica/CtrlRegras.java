@@ -507,24 +507,24 @@ public class CtrlRegras implements ObservadoIF {
 		JComboBox<String> cbVenda = new JComboBox<String>(getJogadorPropriedades());
 		Object[] cbVendaDisplay = {"Escolha uma propriedade para vender:", cbVenda};
 		int esc = JOptionPane.showOptionDialog(null, cbVendaDisplay, "Venda de Propriedades",
-				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null); // escolhe um propriedade para vender
 		
 		if (esc == JOptionPane.OK_OPTION) {
 			int prop = players[vez].getPropriedades().get(cbVenda.getSelectedIndex());
-			if(propriedade[prop] instanceof Empresa) {
+			if(propriedade[prop] instanceof Empresa) { // empresas não tem verificação de construção
 				propriedade[prop].setProprietario(-1);
 				
 				players[vez].vendePropriedade(prop);
 				players[vez].modifyMoney((propriedade[prop].getPreco()*9)/10);
 				bankMoney -= (propriedade[prop].getPreco()*9)/10;
 			} else {
-				int i = prop < 5 ? 0 : prop - 5; // pior caso: propriedade de mesma cor 5 casas atrás
+				int i = prop < 5 ? 0 : prop - 5; // pior caso: propriedade de mesma cor 5 casas do tabuleiro atrás
 				int preco_construcoes = 0;
 				boolean ehProprietario = true; // é proprietário do grupo de terrenos?
 				ArrayList<Propriedade> subsetColor = new ArrayList<Propriedade>();
 				String cor = ((Terreno)propriedade[prop]).getCor();
 				
-				while(i < propriedade.length) { // procura se o player é dono de todas as casas da cor do terreno e se há casas
+				while(i < propriedade.length) { // procura se o player é dono de todas as casas da cor do terreno
 					if(propriedade[i] instanceof Terreno) {
 						if(i > prop && !cor.equals(((Terreno)propriedade[i]).getCor())) {
 							break;
@@ -539,21 +539,21 @@ public class CtrlRegras implements ObservadoIF {
 					i++;
 				}
 				
-				if(ehProprietario) {
+				if(ehProprietario) { // ele é proprietário da cor 
 				
 					for(Propriedade unit : subsetColor) {
 						preco_construcoes += ((Terreno)unit).getPrecoVendaConstrucoes();
 					}
 					
-					if(preco_construcoes > 0) {
+					if(preco_construcoes > 0) { // significa que tem construções
 						int opt = JOptionPane.showOptionDialog(null, "Ao confirmar, estará vendendo tanto a propriedade escolhida como todas\n"
 								+ "as casas do grupo de terrenos de cor "+cor+".\nDeseja prosseguir?", "Valor dos Dados",
-								JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+								JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null); // último aviso ao jogador
 						if(opt != JOptionPane.OK_OPTION) {
 							return players[vez].getMoney();
 						} else {
 							for(Propriedade unit : subsetColor) {
-								((Terreno)unit).vendeConstrucoes();								
+								((Terreno)unit).vendeConstrucoes();
 							}
 							players[vez].modifyMoney((preco_construcoes*9)/10);
 						}
@@ -563,6 +563,7 @@ public class CtrlRegras implements ObservadoIF {
 					players[vez].vendePropriedade(prop);
 					players[vez].modifyMoney((propriedade[prop].getPreco()*9)/10);
 					bankMoney -= (propriedade[prop].getPreco()*9)/10;
+					
 				} else {
 					
 					propriedade[prop].setProprietario(-1);
@@ -579,11 +580,11 @@ public class CtrlRegras implements ObservadoIF {
 	
 	public void execCompraCasa() {
 		
-		ArrayList<String> propriedadesJogNome = new ArrayList<String>();
-		ArrayList<Integer> propriedadesJog =  players[vez].getPropriedades();
-		String[] nomesProp = getJogadorPropriedades();
+		ArrayList<String> propriedadesJogNome = new ArrayList<String>(); // array com nomes dos terrenos do jogador
+		ArrayList<Integer> propriedadesJog =  players[vez].getPropriedades(); // array com posições dos terrenos do jogador
+		String[] nomesProp = getJogadorPropriedades(); // array com nomes de todas as propriedades do jogador
 		
-		for(int i = 0; i < nomesProp.length; i++) {
+		for(int i = 0; i < nomesProp.length; i++) { // irá tirar do array as propriedades que são Empresa
 			if (propriedade[propriedadesJog.get(i)] instanceof Terreno) {
 				propriedadesJogNome.add(nomesProp[i]);
 			} else {
@@ -597,10 +598,9 @@ public class CtrlRegras implements ObservadoIF {
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 		
 		if (esc == JOptionPane.OK_OPTION) {
-			int prop = propriedadesJog.get(cbCompra.getSelectedIndex());
+			int prop = propriedadesJog.get(cbCompra.getSelectedIndex()); // índice da propriedade escolhida
 			int i = prop < 5 ? 0 : prop - 5; // pior caso: propriedade de mesma cor 5 casas atrás
 			int min_construcoes = 0;
-			boolean ehProprietario = true; // é proprietário do grupo de terrenos?
 			ArrayList<Propriedade> subsetColor = new ArrayList<Propriedade>();
 			String cor = ((Terreno)propriedade[prop]).getCor();
 			
@@ -611,8 +611,9 @@ public class CtrlRegras implements ObservadoIF {
 						break;
 					} else if(cor.equals(((Terreno)propriedade[i]).getCor())){
 						if(propriedade[i].getProprietario() != vez) {
-							ehProprietario = false;
-							break;
+							JOptionPane.showMessageDialog(null, "Não é possível fazer a compra de casas para esse terreno, "
+									+ "pois você não é dono de todos os terrenos dessa cor.");
+							return;
 						}
 						subsetColor.add(propriedade[i]);
 					}
@@ -620,11 +621,38 @@ public class CtrlRegras implements ObservadoIF {
 				i++;
 			}
 			
-			if(ehProprietario) {
+			int num_construcoes; // numero de construções no terreno no qual deseja-se comprar casas
+			for(Propriedade unit : subsetColor) {
+				num_construcoes = ((Terreno)unit).getCasas() + ((Terreno)unit).getHotel(); // uso auxiliar de num_construcoes
+				min_construcoes = min_construcoes > num_construcoes ? num_construcoes : min_construcoes;
+			}
+			
+			num_construcoes = ((Terreno) propriedade[prop]).getCasas()+((Terreno) propriedade[prop]).getHotel();
+			
+			if(num_construcoes == 5) {
+				JOptionPane.showMessageDialog(null, "Esse terreno já tem o número máximo de casas e hoteis.");
+			} else if(num_construcoes == min_construcoes) {
+				int preco;
+				String tipo;
+				if(num_construcoes == 4) {
+					preco = ((Terreno)propriedade[prop]).compraHotel();
+					tipo = " hotel";
+				} else {
+					preco = ((Terreno)propriedade[prop]).compraCasa();
+					tipo = "a casa";
+				}
 				
+				players[vez].modifyMoney(-preco);
+				bankMoney += preco;
+				this.notificaAll();
+				JOptionPane.showMessageDialog(null, "Você comprou um"+tipo+" no terreno "+cbCompra.getSelectedItem()+" por $"+preco);
+			} else {
+				JOptionPane.showMessageDialog(null, "Você deve ter um número igual de casas ou hoteis nos outros terrenos dessa cor"
+						+ " antes de poder comprar mais casas ou hoteis.");
 			}
 			
 		}
+		
 	}
 	
 	public String[] getJogadorPropriedades() {
