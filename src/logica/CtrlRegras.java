@@ -375,8 +375,11 @@ public class CtrlRegras implements ObservadoIF {
 			return execNextCarta();
 		} else {
 			for(int i = 0; i < casasPropriedade.length; i++)
-				if(casasPropriedade[i] == casa)
-					return execPropriedade(i);
+				if(casasPropriedade[i] == casa) {
+					int displayC = execPropriedade(i);
+					this.notificaAll();
+					return displayC;
+				}
 		}
 		
 		this.notificaAll();
@@ -393,15 +396,15 @@ public class CtrlRegras implements ObservadoIF {
 	
 	public String[] getPropriedadeInfo(int index) {
 		String[] propriedadeInfo = null;
-		if(propriedade[casasPropriedade[index]] instanceof Empresa) {
+		if(propriedade[index] instanceof Empresa)
 			propriedadeInfo = new String[1];
-		} else {
+		else {
 			propriedadeInfo = new String[3];
-			propriedadeInfo[1] = ""+((Terreno) propriedade[casasPropriedade[index]]).getCasas();
-			propriedadeInfo[2] = ""+((Terreno) propriedade[casasPropriedade[index]]).getHotel();
+			propriedadeInfo[1] = ""+((Terreno) propriedade[index]).getCasas();
+			propriedadeInfo[2] = ""+((Terreno) propriedade[index]).getHotel();
 		}
 		
-		int numProprietario = propriedade[casasPropriedade[index]].getProprietario();
+		int numProprietario = propriedade[index].getProprietario();
 		if(numProprietario < 0)
 			propriedadeInfo[0] = "Banco";
 		else

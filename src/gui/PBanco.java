@@ -237,7 +237,6 @@ public class PBanco extends JPanel implements MouseListener, ObservadorIF {
 			}
 		}
 
-		System.out.printf("x = %d, y = %d\n", x,y); //Para encontrar a posicao em um determinado ponto TODO
 	}
 
 	public void mouseReleased(MouseEvent e) {}
