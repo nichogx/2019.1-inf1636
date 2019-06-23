@@ -3,6 +3,8 @@ package componentes.jogador;
 import java.awt.Color;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 public class Jogador implements JogadorInfo {
 
 	private Pino pin = new Pino();
@@ -79,6 +81,9 @@ public class Jogador implements JogadorInfo {
 	
 	public int modifyMoney(int val) {
 		money += val;
+		if (money <= 0) {
+			JOptionPane.showMessageDialog(null, cor + ": Seu dinheiro está negativo ou zerado! Se você passar a vez você irá à falência! Venda suas propriedades antes de passá-las ou não terá mais a chance.");
+		}
 		return money;
 	}
 	

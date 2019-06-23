@@ -190,6 +190,20 @@ public class CtrlRegras implements ObservadoIF {
 				System.exit(0);
 			}
 			
+			// recriando casas e hoteis
+			for (int i = 0; i < propriedade.length; i++) {
+				// empresas
+				Pattern pattern = Pattern.compile("(\t)(((empresa) " + i + ";)|((terreno) " + i + ": casa (\\d+), hotel (\\d+);))");
+				Matcher matcher = pattern.matcher(fStr);
+				matcher.find();
+				if (matcher.group(6) != null && matcher.group(6).contentEquals("terreno") && propriedade[i] instanceof Terreno) {
+					Terreno t = (Terreno) propriedade[i];
+					int casa = Integer.parseInt(matcher.group(7));
+					int hotel = Integer.parseInt(matcher.group(8));
+					t.loadCasaHotel(casa, hotel);
+				}
+			}
+			
 			// recriando dados (default)
 			dados[0] = new Dado();
 			dados[1] = new Dado();
@@ -219,10 +233,15 @@ public class CtrlRegras implements ObservadoIF {
 		vez = (vez + 1) % numPlayers;
 		while (players[vez].getMoney() <= 0) { // está falido, passa pro próximo
 			if (vezInicial == vez) { // fez loop e o atual está falido
-				// TODO fim de jogo, todos faliram
-				// não deve acontecer, pois se todos falirem menos um este ganhou
+				JOptionPane.showMessageDialog(null,"Fim de jogo! Todos faliram.");
+				endgame();
 			}
 			vez = (vez + 1) % numPlayers; // passa pro outro
+		}
+		if (vezInicial == vez) {
+			// próximo não falido era ele mesmo
+			JOptionPane.showMessageDialog(null,"Fim de jogo! Todos os outros jogadores faliram.");
+			endgame();
 		}
 		
 		podeRolarDado = true;
@@ -749,6 +768,18 @@ public class CtrlRegras implements ObservadoIF {
 		}
 		writer.append("vez: " + vez + ";\n");
 		writer.append("cartasSortes: " + cartasSortes.toString() + ";\n");
+		writer.append("propriedades: " + propriedade.length + ";\n");
+		for (int i = 0; i < propriedade.length; i++) {
+			Propriedade p = propriedade[i];
+			if (p instanceof Terreno) {
+				writer.append("\tterreno " + i + ": ");
+				Terreno t = (Terreno) p;
+				writer.append(t.genSaveString());
+				writer.append(";\n");
+			} else {
+				writer.append("\tempresa " + i + ";\n");
+			}
+		}
 		
 		writer.close();
 		
