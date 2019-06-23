@@ -515,8 +515,12 @@ public class CtrlRegras implements ObservadoIF {
 				propriedade[prop].setProprietario(-1);
 				
 				players[vez].vendePropriedade(prop);
-				players[vez].modifyMoney((propriedade[prop].getPreco()*9)/10);
-				bankMoney -= (propriedade[prop].getPreco()*9)/10;
+				int preco = (propriedade[prop].getPreco()*9)/10;
+				players[vez].modifyMoney(preco);
+				bankMoney -= preco;
+				this.notificaAll();
+				JOptionPane.showMessageDialog(null, "Você vendeu a empresa "+cbVenda.getSelectedItem()+" por $"+preco);
+				
 			} else {
 				int i = prop < 5 ? 0 : prop - 5; // pior caso: propriedade de mesma cor 5 casas do tabuleiro atrás
 				int preco_construcoes = 0;
@@ -539,15 +543,16 @@ public class CtrlRegras implements ObservadoIF {
 					i++;
 				}
 				
-				if(ehProprietario) { // ele é proprietário da cor 
+				if(ehProprietario) { // ele é proprietário da cor
 				
 					for(Propriedade unit : subsetColor) {
 						preco_construcoes += ((Terreno)unit).getPrecoVendaConstrucoes();
 					}
 					
+					String construcao = "";
 					if(preco_construcoes > 0) { // significa que tem construções
-						int opt = JOptionPane.showOptionDialog(null, "Ao confirmar, estará vendendo tanto a propriedade escolhida como todas\n"
-								+ "as casas do grupo de terrenos de cor "+cor+".\nDeseja prosseguir?", "Valor dos Dados",
+						int opt = JOptionPane.showOptionDialog(null, "Ao confirmar, estará vendendo tanto a propriedade escolhida como também\n"
+								+ "todas as casas do grupo de terrenos de cor "+cor+".\nDeseja prosseguir?", "Valor dos Dados",
 								JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null); // último aviso ao jogador
 						if(opt != JOptionPane.OK_OPTION) {
 							return players[vez].getMoney();
@@ -555,26 +560,34 @@ public class CtrlRegras implements ObservadoIF {
 							for(Propriedade unit : subsetColor) {
 								((Terreno)unit).vendeConstrucoes();
 							}
-							players[vez].modifyMoney((preco_construcoes*9)/10);
+							preco_construcoes = (preco_construcoes*9)/10;
+							players[vez].modifyMoney(preco_construcoes);
+							bankMoney -= preco_construcoes;
+							construcao = "E você vendeu todas as casas do grupo de terrenos de cor "+cor+" por $"+preco_construcoes+".";
 						}
 					}
 					
 					propriedade[prop].setProprietario(-1);
 					players[vez].vendePropriedade(prop);
-					players[vez].modifyMoney((propriedade[prop].getPreco()*9)/10);
-					bankMoney -= (propriedade[prop].getPreco()*9)/10;
+					int preco = (propriedade[prop].getPreco()*9)/10;
+					players[vez].modifyMoney(preco);
+					bankMoney -= preco;
+					JOptionPane.showMessageDialog(null, "Você vendeu o terreno "+cbVenda.getSelectedItem()+" por $"+preco+".");
+					this.notificaAll();
 					
 				} else {
 					
 					propriedade[prop].setProprietario(-1);
 					players[vez].vendePropriedade(prop);
-					players[vez].modifyMoney((propriedade[prop].getPreco()*9)/10);
-					bankMoney -= (propriedade[prop].getPreco()*9)/10;
+					int preco = (propriedade[prop].getPreco()*9)/10;
+					players[vez].modifyMoney(preco);
+					bankMoney -= preco;
+					JOptionPane.showMessageDialog(null, "Você vendeu o terreno "+cbVenda.getSelectedItem()+" por $"+preco+".");
+					this.notificaAll();
 				}
 			}
 		}
 		
-		this.notificaAll();
 		return players[vez].getMoney();
 	}
 	
