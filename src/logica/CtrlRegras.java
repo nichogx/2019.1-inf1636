@@ -735,12 +735,11 @@ public class CtrlRegras implements ObservadoIF {
 		Integer[] sorted = new Integer[numPlayers];
 		for (int i = 0; i < numPlayers; i++) {
 			sorted[i] = i;
+			
+			execVenderTodasPropriedades(i);
 		}
 
 		Arrays.sort(sorted, (a, b) -> {
-			// TODO aqui só compara o dinheiro. Comparar propriedades também
-			// ("vender" tudo para contar??)
-			// (acho que sim, parece uma boa e se nao me engano o Ivan falou isso)
 			return players[b].getMoney() - players[a].getMoney();
 		});
 		
