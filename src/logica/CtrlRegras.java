@@ -423,6 +423,7 @@ public class CtrlRegras implements ObservadoIF {
 			}
 		} else if (cartaAtual == 22) { // ir para prisão
 			boolean foiPreso = players[vez].irPrisao();
+			this.podeRolarDado = false;
 			this.notificaAll();
 			if (!foiPreso) {
 				JOptionPane.showMessageDialog(null,"Você usou sua carta de sair da prisão!");
