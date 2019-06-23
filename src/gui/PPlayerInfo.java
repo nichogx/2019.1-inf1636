@@ -19,7 +19,7 @@ public class PPlayerInfo extends JPanel implements ObservadorIF {
 		this.setLayout(null);
 		
 		JButton bVenda = new JButton("Vender uma Propriedade");
-		bVenda.setBounds(frame.LARG_DEFAULT/2 - 180/2, frame.ALT_DEFAULT - 120, 180, 30);
+		bVenda.setBounds(frame.LARG_DEFAULT/2 - 220/2, frame.ALT_DEFAULT - 120, 180, 30);
 		bVenda.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(!CtrlRegras.getInstance().getPlayerInfo().getPropriedades().isEmpty())
@@ -29,6 +29,18 @@ public class PPlayerInfo extends JPanel implements ObservadorIF {
 			}
 		});
 		this.add(bVenda);
+		
+		JButton bCompraCasa = new JButton("Comprar Casa/Hotel");
+		bCompraCasa.setBounds(frame.LARG_DEFAULT/2 - 220/2, frame.ALT_DEFAULT - 160, 180, 30);
+		bCompraCasa.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(!CtrlRegras.getInstance().getPlayerInfo().getPropriedades().isEmpty())
+					CtrlRegras.getInstance().execCompraCasa();
+				else
+					JOptionPane.showMessageDialog(null, "Você não tem propriedades para comprar casas/hotel!");
+			}
+		});
+		this.add(bCompraCasa);
 		
 		cb.setBounds(20, 120, 200, 20);
 		this.add(cb);

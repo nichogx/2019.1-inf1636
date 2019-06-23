@@ -572,7 +572,7 @@ public class CtrlRegras implements ObservadoIF {
 					int preco = (propriedade[prop].getPreco()*9)/10;
 					players[vez].modifyMoney(preco);
 					bankMoney -= preco;
-					JOptionPane.showMessageDialog(null, "Você vendeu o terreno "+cbVenda.getSelectedItem()+" por $"+preco+".");
+					JOptionPane.showMessageDialog(null, "Você vendeu o terreno "+cbVenda.getSelectedItem()+" por $"+preco+".\n"+construcao);
 					this.notificaAll();
 					
 				} else {
@@ -605,7 +605,15 @@ public class CtrlRegras implements ObservadoIF {
 			}
 		}
 		
-		JComboBox<String> cbCompra = new JComboBox<String>((String[])propriedadesJogNome.toArray());
+		System.out.print(propriedadesJog.size()); // TODO verificar
+		for(String i : propriedadesJogNome) {
+			System.out.println(i);
+		}
+		
+		String[] nomesProp2 = propriedadesJogNome.toArray(new String[propriedadesJogNome.size()]);
+		
+		
+		JComboBox<String> cbCompra = new JComboBox<String>(nomesProp2);
 		Object[] cbCompraDisplay = {"Escolha uma propriedade para comprar uma casa/hotel:", cbCompra};
 		int esc = JOptionPane.showOptionDialog(null, cbCompraDisplay, "Compra de Construções",
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
