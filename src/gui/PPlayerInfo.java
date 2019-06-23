@@ -4,9 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import logica.*;
+import observer.*;
 
 @SuppressWarnings("serial")
-public class PPlayerInfo extends JPanel implements MouseListener {
+public class PPlayerInfo extends JPanel implements ObservadorIF {
 	
 	private FPlayerInfo frame;
 	
@@ -15,8 +16,6 @@ public class PPlayerInfo extends JPanel implements MouseListener {
 	public PPlayerInfo(FPlayerInfo frame) {
 
 		this.frame = frame;
-		
-		this.addMouseListener(this);
 		this.setLayout(null);
 		
 		JButton bVenda = new JButton("Vender uma Propriedade");
@@ -27,13 +26,15 @@ public class PPlayerInfo extends JPanel implements MouseListener {
 					CtrlRegras.getInstance().execVendaProp();
 				else
 					JOptionPane.showMessageDialog(null, "Você não tem propriedades para vender!");
-				p.repaint();
 			}
 		});
 		this.add(bVenda);
 		
 		cb.setBounds(20, 120, 200, 20);
-		this.add(cb);	
+		this.add(cb);
+		
+		// subscreve como observado
+		CtrlRegras.getInstance().add(this);
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -65,15 +66,8 @@ public class PPlayerInfo extends JPanel implements MouseListener {
 			cb.addItem(propriedades[i]);
 		}
 	}
-	
-	public void mouseClicked(MouseEvent e) {}
 
-	public void mouseEntered(MouseEvent e) {}
-
-	public void mouseExited(MouseEvent e) {}
-
-	public void mousePressed(MouseEvent e) {}
-
-	public void mouseReleased(MouseEvent e) {}
-	
+	public void notify(ObservadoIF o) {
+		this.repaint();
+	}
 }

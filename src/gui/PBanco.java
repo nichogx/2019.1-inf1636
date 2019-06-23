@@ -10,7 +10,7 @@ import logica.*;
 import observer.*;
 
 @SuppressWarnings("serial")
-public class PBanco extends JPanel implements MouseListener,ObservadorIF {
+public class PBanco extends JPanel implements MouseListener, ObservadorIF {
 
 	private FBanco frame = null;
 
@@ -93,7 +93,6 @@ public class PBanco extends JPanel implements MouseListener,ObservadorIF {
 		
 		// Desenhar botão de passar a vez
 		JButton bPass = new JButton("Passar Vez");
-		PBanco p = this;
 		bPass.setBounds(frame.LARG_DEFAULT/2 - 150/2, 540, 150, 30);
 		bPass.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

@@ -18,4 +18,12 @@ public class Terreno extends Propriedade {
 	public String getCor() {
 		return cor;
 	}
+	
+	public int getCasas() {
+		return casa;
+	}
+	
+	public int getHotel() {
+		return hotel;
+	}
 }

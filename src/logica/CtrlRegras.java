@@ -441,11 +441,17 @@ public class CtrlRegras implements ObservadoIF {
 					}
 				}
 				
-				if(!playerFaliu)
+				if(!playerFaliu) {
+					players[propriedade[prop].getProprietario()].modifyMoney(aluguel); // proprietario recebe aluguel
+					this.notificaAll();
 					JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+propriedade[prop].getNome()+" do jogador "+players[propriedade[prop].getProprietario()].getCor());
-				else
+				} else {
+					bankMoney += players[vez].getMoney(); // banco paga aluguel pelo falido
+					players[propriedade[prop].getProprietario()].modifyMoney(aluguel); // proprietario recebe aluguel
+					this.notificaAll();
 					JOptionPane.showMessageDialog(null, "Você não pagou $"+aluguel+" em aluguel para a propriedade "+propriedade[prop].getNome()+" do jogador "+players[propriedade[prop].getProprietario()].getCor()+" e por isso você faliu!");
-			
+				}
+					
 			} else {
 				boolean playerFaliu = false;
 				int aluguel = ((Terreno)propriedade[prop]).getAluguel();
@@ -460,10 +466,16 @@ public class CtrlRegras implements ObservadoIF {
 					}
 				}
 				
-				if(!playerFaliu)
+				if(!playerFaliu) {
+					players[propriedade[prop].getProprietario()].modifyMoney(aluguel); // proprietario recebe aluguel
+					this.notificaAll();
 					JOptionPane.showMessageDialog(null, "Você pagou $"+aluguel+" em aluguel para a propriedade "+propriedade[prop].getNome()+" do jogador "+players[propriedade[prop].getProprietario()].getCor());
-				else
+				} else {
+					bankMoney += players[vez].getMoney(); // banco paga aluguel pelo falido
+					players[propriedade[prop].getProprietario()].modifyMoney(aluguel); // proprietario recebe aluguel
+					this.notificaAll();
 					JOptionPane.showMessageDialog(null, "Você não pagou $"+aluguel+" em aluguel para a propriedade "+propriedade[prop].getNome()+" do jogador "+players[propriedade[prop].getProprietario()].getCor()+" e por isso você faliu!");
+				}
 			}
 			
 		} else {
@@ -487,7 +499,6 @@ public class CtrlRegras implements ObservadoIF {
 			
 		}
 		
-		
 		return -prop-2;
 	}
 	
@@ -500,12 +511,50 @@ public class CtrlRegras implements ObservadoIF {
 		
 		if (esc == JOptionPane.OK_OPTION) {
 			int prop = players[vez].getPropriedades().get(cbVenda.getSelectedIndex());
-			propriedade[prop].setProprietario(-1);
-			players[vez].vendePropriedade(prop);
-			players[vez].modifyMoney(propriedade[prop].getPreco()/2);
-			bankMoney -= propriedade[prop].getPreco()/2;
+			if(propriedade[prop] instanceof Empresa) {
+				propriedade[prop].setProprietario(-1);
+				players[vez].vendePropriedade(prop);
+				players[vez].modifyMoney(propriedade[prop].getPreco()/2);
+				bankMoney -= propriedade[prop].getPreco()/2;
+			} else {
+				int i = prop < 5 ? 0 : prop - 5; // pior caso: propriedade de mesma cor 5 casas atrás
+				int contCasa = 0;
+				String cor = ((Terreno)propriedade[prop]).getCor();
+				
+				while(i < propriedade.length) { // procura se o player é dono de todas as casas da cor do terreno e se há casas
+					if(propriedade[i] instanceof Terreno) {
+						if(i > prop && !cor.equals(((Terreno)propriedade[i]).getCor())) {
+							break;
+						} else if(cor.equals(((Terreno)propriedade[i]).getCor())){
+							if (propriedade[i].getProprietario() != vez) break;
+							contCasa += ((Terreno)propriedade[i]).getCasas();
+						}
+					}
+					i++;
+				}
+				
+				if(contCasa > 0) {
+					propriedade[prop].setProprietario(-1);
+					players[vez].vendePropriedade(prop);
+					players[vez].modifyMoney(propriedade[prop].getPreco()/2);
+					bankMoney -= propriedade[prop].getPreco()/2;
+				} else {
+					while(i < propriedade.length) { // vende todas as casas/hoteis dos terrenos de mesma cor e então vende o terreno
+						if(propriedade[i] instanceof Terreno) {
+							if(i > prop && !cor.equals(((Terreno)propriedade[i]).getCor())) {
+								break;
+							} else if(cor.equals(((Terreno)propriedade[i]).getCor())){
+								if (propriedade[i].getProprietario() != vez) break;
+								contCasa += ((Terreno)propriedade[i]).getCasas();
+							}
+						}
+						i++;
+					}
+				}
+			}
 		}
 		
+		this.notificaAll();
 		return players[vez].getMoney();
 	}
 	
