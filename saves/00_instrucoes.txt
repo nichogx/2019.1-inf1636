@@ -1,0 +1,6 @@
+Para abrir arquivos salvos, basta iniciar o jogo e na primeira janela que aparece clicar em continuar,
+selecionando, então, o arquivo a abrir.
+
+Para rodar o dado, clique no mesmo.
+
+Instruções específicas para cada arquivo de teste estão nos cabeçalhos dos mesmos.
