@@ -1,0 +1,45 @@
+// INSTRUÇÕES:
+// o jogo começará na vez do vermelho.
+// quando clicar passar a vez, passará para o laranja pois o azul está falido.
+// force os valores de dado 1 e 1 para o laranja. Ele cairá na carta revéz e perderá dinheiro.
+// seu dinheiro ficará negativo e ele então falirá, pois não tem nenhuma propriedade para vender.
+// passe a vez de novo para o vermelho. Quando este então passar sua vez, o jogo encerrará.
+bankmoney: 51956;
+numplayers: 3;
+	player 0: casa 17, money 568, cartaSair false, preso false;
+		propriedades: [2];
+	player 1: casa 25, money 0, cartaSair false, preso false;
+		propriedades: [];
+	player 2: casa 0, money 2, cartaSair false, preso false;
+		propriedades: [];
+vez: 0;
+cartasSortes: [20, 8, 22, 1, 16, 27, 14, 6, 5, 2, 12, 18, 13, 11, 3, 25, 24, 10, 29, 23, 28, 0, 21, 17, 26, 15, 4, 19, 7, 9];
+propriedades: 28;
+	terreno 0: casa 0, hotel 0;
+	terreno 1: casa 0, hotel 0;
+	terreno 2: casa 0, hotel 0;
+	empresa 3;
+	terreno 4: casa 0, hotel 0;
+	empresa 5;
+	terreno 6: casa 0, hotel 0;
+	terreno 7: casa 0, hotel 0;
+	terreno 8: casa 0, hotel 0;
+	terreno 9: casa 0, hotel 0;
+	terreno 10: casa 0, hotel 0;
+	empresa 11;
+	terreno 12: casa 0, hotel 0;
+	terreno 13: casa 0, hotel 0;
+	terreno 14: casa 0, hotel 0;
+	terreno 15: casa 0, hotel 0;
+	empresa 16;
+	terreno 17: casa 0, hotel 0;
+	terreno 18: casa 0, hotel 0;
+	terreno 19: casa 0, hotel 0;
+	terreno 20: casa 0, hotel 0;
+	empresa 21;
+	terreno 22: casa 0, hotel 0;
+	terreno 23: casa 0, hotel 0;
+	empresa 24;
+	terreno 25: casa 0, hotel 0;
+	terreno 26: casa 0, hotel 0;
+	terreno 27: casa 0, hotel 0;
